@@ -1,0 +1,8 @@
+{
+  "ngPackage": {
+    "lib": {
+      "ngPackage": "./src",
+      "styleIncludePaths": ["./ag-virtual-scroll"]
+    }
+  }
+}

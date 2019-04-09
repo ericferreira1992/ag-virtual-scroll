@@ -1,0 +1,50 @@
+<section>
+	<h4>
+		Example 01
+	</h4>
+	<p>Items equals row heights</p>
+	<table>
+		<thead>
+			<tr>
+				<th width="25%">Id</th>
+				<th width="50%">Name</th>
+				<th width="25%">Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			<ag-virtual-scroll #vs [items]="item" height="500px">
+				<tr class="item" *ngFor="let item of vs.items">
+					<td>{{item.id}}</td>
+					<td>{{item.name}}</td>
+					<td>{{item.price}}</td>
+				</tr>
+			</ag-virtual-scroll>
+		</tbody>
+	</table>
+</section>
+
+<section>
+	<h4>
+		Example 02
+	</h4>
+	<p>Items with unequals row heights</p>
+	<table>
+		<thead>
+			<tr>
+				<th width="25%">Id</th>
+				<th width="50%">Name</th>
+				<th width="25%">Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			<ag-virtual-scroll #vs [items]="item" height="500px">
+				<tr class="item" *ngFor="let item of vs.items" [style.height.px]="item.height">
+					<td>{{item.id}}</td>
+					<td>{{item.name}}</td>
+					<td>{{item.price}}</td>
+				</tr>
+			</ag-virtual-scroll>
+		</tbody>
+	</table>
+</section>
+

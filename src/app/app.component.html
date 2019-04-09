@@ -1,8 +1,0 @@
-<section #container (scroll)="onScroll()">
-	<div class="content-height" [style.height.px]="contentHeight"></div>
-	<div #itemsContainer class="items-container" [style.transform]="'translateY(' + paddingTop + 'px)'">
-		<div class="item" *ngFor="let item of _items" [style.height.px]="item.height">
-			<span>{{item.name}}</span>
-		</div>
-	</div>
-</section>

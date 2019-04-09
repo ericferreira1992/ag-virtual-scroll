@@ -1,0 +1,16 @@
+:host::ng-deep {	
+
+    table {
+        tbody {
+            .item {
+                box-sizing: border-box;
+                border-bottom: 1px solid #CCC;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    > section {
+        padding-bottom: 50px;
+    }
+}
