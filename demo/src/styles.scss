@@ -1,1 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~highlight.js/styles/github.css';
+
+html, body {
+    font-size: 13px;
+    color: #666;
+    font-family: Arial;
+    margin: 0;
+
+    * {
+        box-sizing: border-box;
+    }
+}
+
+h4 {
+    font-size: 20px;
+    margin: 0;
+}
+
+h3 {
+    font-size: 16px;
+    margin: 0;
+}
+
+p {
+    font-size: 14px;
+    margin: 0;
+    padding-bottom: 15px;
+}

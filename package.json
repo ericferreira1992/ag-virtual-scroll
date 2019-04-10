@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "pushd demo && ng serve --port=4300",
+    "start": "pushd demo && ng serve --port=4300 --host=0.0.0.0",
     "build": "pushd demo && ng build --aot --prod",
     "deploy-git-pages": "pushd demo && ng build --aot --prod --base-href=/ag-virtual-scroll/ && node ../node_modules/gh-pages/bin/gh-pages -d dist",
     "build-lib": "rimraf dist && npm run packagr && node copy && cd dist && npm pack",
@@ -27,6 +27,8 @@
     "express": "^4.16.3",
     "fast-deep-equal": "^2.0.1",
     "gh-pages": "^2.0.1",
+    "highlight.js": "^9.15.6",
+    "ngx-highlightjs": "^3.0.3",
     "path": "^0.12.7",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",

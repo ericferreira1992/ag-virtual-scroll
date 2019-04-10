@@ -1,0 +1,33 @@
+<h4>
+	Example 02
+</h4>
+<p>Items with unequal heights</p>
+
+<div class="demo-container">
+	<div class="demo-viewer">
+		<ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
+			<div class="demo-item" *ngFor="let item of vs.items">
+				<div>
+					<strong>{{item.id}}</strong>
+				</div>
+				<div>
+					<p>{{item.name}}</p>
+					<p>{{item.price | currency}}</p>
+					<div class="test-custom-height" [style.height.px]="item.height"></div>
+				</div>
+			</div>
+		</ag-virtual-scroll>
+        <div class="demo-info">
+            <div>
+                Rendered: <strong>{{vs.numberItemsRendred}}</strong> items (from <strong>{{vs.startIndex + 1}}</strong> to <strong>{{vs.endIndex + 1}}</strong>).
+            </div>
+            <div>
+                Total: <strong>{{items.length}}</strong> items.
+            </div>
+        </div>
+	</div>
+    <div class="demo-code">
+        <h3>Code</h3>
+        <pre><code [highlight]="strCode"></code></pre>
+    </div>
+</div>

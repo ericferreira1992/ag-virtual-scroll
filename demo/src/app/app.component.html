@@ -1,50 +1,22 @@
-<section>
-	<h4>
-		Example 01
-	</h4>
-	<p>Items equals row heights</p>
-	<table>
-		<thead>
-			<tr>
-				<th width="25%">Id</th>
-				<th width="50%">Name</th>
-				<th width="25%">Price</th>
-			</tr>
-		</thead>
-		<tbody>
-			<ag-virtual-scroll #vs [items]="item" height="500px">
-				<tr class="item" *ngFor="let item of vs.items">
-					<td>{{item.id}}</td>
-					<td>{{item.name}}</td>
-					<td>{{item.price}}</td>
-				</tr>
-			</ag-virtual-scroll>
-		</tbody>
-	</table>
-</section>
+<div class="demos-title">
+	ag-virtual-scroll
+</div>
+<div class="demos-area">
+	<section>
+		<app-list-demo></app-list-demo>
+	</section>
+	
+	<section>
+		<app-list-random-height-demo></app-list-random-height-demo>
+	</section>
+	
+	<section>
+		<app-table-demo></app-table-demo>
+	</section>
+			
+</div>
 
-<section>
-	<h4>
-		Example 02
-	</h4>
-	<p>Items with unequals row heights</p>
-	<table>
-		<thead>
-			<tr>
-				<th width="25%">Id</th>
-				<th width="50%">Name</th>
-				<th width="25%">Price</th>
-			</tr>
-		</thead>
-		<tbody>
-			<ag-virtual-scroll #vs [items]="item" height="500px">
-				<tr class="item" *ngFor="let item of vs.items" [style.height.px]="item.height">
-					<td>{{item.id}}</td>
-					<td>{{item.name}}</td>
-					<td>{{item.price}}</td>
-				</tr>
-			</ag-virtual-scroll>
-		</tbody>
-	</table>
-</section>
-
+<div class="footer">
+	See the source code into <br/>
+	<a href="https://github.com/ericferreira1992/ag-virtual-scroll" target="_blank">Github</a> repository.
+</div>

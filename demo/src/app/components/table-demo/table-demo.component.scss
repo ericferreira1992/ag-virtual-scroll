@@ -1,0 +1,30 @@
+:host {
+    table {
+        width: 100%;
+        border-spacing: 0;
+
+        thead {
+            background: #555;
+            color: #FFF;
+
+            > th {
+                padding: 10px 10px;
+                text-align: left;
+            }
+        }
+
+        tbody {
+            .demo-item {
+                display: table-row;
+
+                > td {
+                    box-sizing: border-box;
+                    border-bottom: 1px solid #CCC;
+                    vertical-align: middle;
+
+                    padding: 10px;
+                }
+            }
+        }
+    }
+}

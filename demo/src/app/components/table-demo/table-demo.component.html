@@ -1,0 +1,38 @@
+<h4>
+    Example 03
+</h4>
+<p>Using in table</p>
+
+
+<div class="demo-container">
+    <div class="demo-viewer">
+        <ag-virtual-scroll #vs [items]="items" height="350px" class="box-border">
+            <table>
+                <thead>
+                    <th width="25%">ID</th>
+                    <th width="50%">NAME</th>
+                    <th width="25%">PRICE</th>
+                </thead>
+                <tbody>
+                    <tr class="demo-item" *ngFor="let item of vs.items">
+                        <td width="25%"><strong>{{item.id}}</strong></td>
+                        <td width="50%">{{item.name}}</td>
+                        <td width="25%">{{item.price | currency}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </ag-virtual-scroll>
+        <div class="demo-info">
+            <div>
+                Rendered: <strong>{{vs.numberItemsRendred}}</strong> items (from <strong>{{vs.startIndex + 1}}</strong> to <strong>{{vs.endIndex + 1}}</strong>).
+            </div>
+            <div>
+                Total: <strong>{{items.length}}</strong> items.
+            </div>
+        </div>
+    </div>
+    <div class="demo-code">
+        <h3>Code</h3>
+        <pre><code [highlight]="strCode"></code></pre>
+    </div>
+</div>
