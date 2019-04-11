@@ -1,18 +1,21 @@
-<h4>
-    Example 01
-</h4>
-<p>Items with equals heights</p>
-
 <div class="demo-container">
     <div class="demo-viewer">
+        <h4>
+            Example 01
+        </h4>
+        <span>Items with equals heights</span>
+
+        <button (click)="add()">+ 1000</button>
+        <button (click)="remove()">- 1000</button>
+
         <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
             <div class="demo-item" *ngFor="let item of vs.items">
                 <div>
-                    <strong>{{item.id}}</strong>
+                    <span>{{item.id}}</span>
                 </div>
                 <div>
-                    <p>{{item.name}}</p>
-                    <p>{{item.price | currency}}</p>
+                    <strong>{{item.name}}</strong><br/>
+                    {{item.price | currency}}
                 </div>
             </div>
         </ag-virtual-scroll>

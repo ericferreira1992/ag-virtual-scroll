@@ -1,4 +1,5 @@
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer, OnInit, Output, EventEmitter } from '@angular/core';
+import { AgVsRenderEvent } from './classes/ag-vs-render-event.class';
 
 @Component({
 	selector: 'ag-virtual-scroll',
@@ -33,6 +34,8 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     @Input('height') private height: string = 'auto';
     @Input('items') private originalItems: any[] = [];
 
+    @Output() private onItemsRender = new EventEmitter<AgVsRenderEvent<any>>();
+
     public items: any[] = [];
 
     public currentScroll: number = 0;
@@ -62,7 +65,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 	
 	ngOnChanges(changes: SimpleChanges) {
 		setTimeout(() => {
-
             if ('minRowHeight' in changes) {
                 if (typeof this.minRowHeight === 'string') {
                     if (parseInt(this.minRowHeight))
@@ -74,42 +76,54 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
 			if ('originalItems' in changes) {
                 if (!this.originalItems) this.originalItems = [];
-				this.previousItemsHeight = new Array(this.originalItems.length).fill(null);
-				this.currentScroll = 0;
-				this.defineDimensions();
-				this.prepareDataVirtualScroll();
-                this.itemsContainerEl.nativeElement.scrollTop = 0;
+                this.previousItemsHeight = new Array(this.originalItems.length).fill(null);
+                
+                if (this.el.nativeElement.scrollTop !== 0)
+                    this.el.nativeElement.scrollTop = 0;
+                else {
+                    this.currentScroll = 0;
+                    this.prepareDataVirtualScroll();
+                    this.checkIsTable();
+                }
 			}
 		});
     }
 
-	onScroll() {
+	private onScroll() {
         this.currentScroll = this.el.nativeElement.scrollTop;
 
+        this.registerCurrentItemsHeight();
+        this.prepareDataVirtualScroll();
+        this.checkIsTable();
+    }
+
+    private registerCurrentItemsHeight() {
         let childrens = this.getInsideChildrens();
         for (let i = 0; i < childrens.length; i++) {
             let children = childrens[i];
             let realIndex = this.startIndex + i;
             this.previousItemsHeight[realIndex] = children.getBoundingClientRect().height;
         }
-
-        this.defineDimensions();
-        this.prepareDataVirtualScroll();
-
-        this.checkIsTable();
     }
 
-    defineDimensions() {
-        this.contentHeight = this.originalItems.reduce((prev, curr, i) => {
+    private getDimensions() {
+        
+        let dimensions = {
+            contentHeight: 0,
+            paddingTop: 0,
+            itemsThatAreGone: 0
+        };
+        
+        dimensions.contentHeight = this.originalItems.reduce((prev, curr, i) => {
 			let height = this.previousItemsHeight[i];
 			return prev + (height ? height : this.minRowHeight);
-		}, 0);
+        }, 0);
 
         if (this.currentScroll >= this.minRowHeight) {
             let newPaddingTop = 0;
             let itemsThatAreGone = 0;
             let initialScroll = this.currentScroll;
-
+            
             for (let h of this.previousItemsHeight) {
                 let height = h ? h : this.minRowHeight;
                 if (initialScroll >= height) {
@@ -120,20 +134,34 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
                 else
                     break;
             }
+            
+            dimensions.paddingTop = newPaddingTop;
+            dimensions.itemsThatAreGone = itemsThatAreGone;
+        }
 
-            this.paddingTop = newPaddingTop;
-            this.startIndex = itemsThatAreGone;
-        }
-        else {
-            this.paddingTop = 0;
-            this.startIndex = 0;
-        }
+        return dimensions;
     }
-
-    prepareDataVirtualScroll() {
+    
+    private prepareDataVirtualScroll() {
+        let dimensions = this.getDimensions();
+        
+        this.contentHeight = dimensions.contentHeight;
+        this.paddingTop = dimensions.paddingTop;
+        this.startIndex = dimensions.itemsThatAreGone;
         this.endIndex = this.startIndex + Math.floor(this.el.nativeElement.clientHeight / this.minRowHeight) + 2;
         this.items = this.originalItems.slice(this.startIndex, this.endIndex);
+
+        this.onItemsRender.emit(new AgVsRenderEvent<any>({
+            items: this.items,
+            startIndex: this.startIndex,
+            endIndex: this.endIndex,
+            length: this.items.length
+        }));
                 
+        this.manipuleRenderedItems();
+    }
+
+    private manipuleRenderedItems() {
         setTimeout(() => {
             let childrens = this.getInsideChildrens();
             for (let i = 0; i < childrens.length; i++) {
@@ -151,7 +179,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         });
     }
 
-    getInsideChildrens() {
+    private getInsideChildrens() {
         let childrens = this.itemsContainerEl.nativeElement.children;
         if (childrens.length > 0) {
             if (childrens[0].tagName.toUpperCase() === 'TABLE') {
@@ -169,7 +197,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         return [];
     }
 
-    checkIsTable() {
+    private checkIsTable() {
         let childrens = this.itemsContainerEl.nativeElement.children;
         if (childrens.length > 0) {
             if (childrens[0].tagName.toUpperCase() === 'TABLE') {

@@ -1,11 +1,13 @@
-<h4>
-    Example 03
-</h4>
-<p>Using in table</p>
-
-
 <div class="demo-container">
     <div class="demo-viewer">
+        <h4>
+            Example 03
+        </h4>
+        <span>Using in table</span>
+
+        <button (click)="add()">+ 1000</button>
+        <button (click)="remove()">- 1000</button>
+
         <ag-virtual-scroll #vs [items]="items" height="350px" class="box-border">
             <table>
                 <thead>

@@ -10,9 +10,23 @@
         margin-bottom: 30px;
         box-shadow: 10px 0 15px rgba(0, 0, 0, 0.4);
     }
+
+    .demos-area {
+        width: 100%;
+        padding: 0 5%;
+
+        > section {
+            padding: 35px 0;
+
+            &:not(:last-child) {
+                border-bottom: #CCC 1px solid;
+            }
+        }
+    }
     
     .box-border {
         border: 1px solid #CCC;
+        margin-top: 10px;
     }
 
     .demo-item {
@@ -25,28 +39,29 @@
             vertical-align: middle;
             padding: 10px;
 
-            > p {
-                padding: 0;
-            }
-
             &:first-child {
-                width: 100px;
+                width: 50px;
+
+                > span {
+                    width: 35px;
+                    height: 35px;
+                    line-height: 35px;
+                    display: inline-block;
+                    vertical-align: top;
+                    text-align: center;
+                    border-radius: 100%;
+                    background: #555;
+                    color: #FFF;
+                }
             }
+        }
+
+        &:last-child {
+            border-bottom: none;
         }
 
         &.ag-virtual-scroll-odd {
             background: #FAFAFA;
-        }
-    }
-
-    .demos-area {
-        width: 100%;
-        padding: 20px 5%;
-
-        > section {
-            &:not(:last-child) {
-                padding-bottom: 50px;
-            }
         }
     }
 
@@ -62,11 +77,29 @@
             .demo-info {
                 padding-top: 10px;
             }
+
+            > button {
+                float: right;
+                margin-left: 15px;
+                margin-top: -20px;
+                cursor: pointer;
+                border: 1px solid #555;
+                color: #555;
+                background: #FFF;
+                padding: 5px 10px;
+
+                &:hover {
+                    background: #555;
+                    color: #FFF;
+                }
+            }
         }
 
         .demo-code {
             display: table-cell;
+            vertical-align: bottom;
             padding-left: 20px;
+            padding-bottom: 40px;
 
             > pre {
                 margin: 0;

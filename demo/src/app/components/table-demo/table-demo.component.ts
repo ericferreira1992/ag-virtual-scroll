@@ -11,13 +11,7 @@ export class TableDemoComponent implements OnInit {
     public strCode: string;
 
     constructor() {
-        this.items = new Array(100000).fill(null)
-            .map((x, i) => ({
-                id: i + 1,
-                name: `Test ${i + 1}`,
-                price: Math.floor(Math.random() * (99999 - 100) + 100) / 100,
-                height: Math.max(Math.floor(Math.random() * 100), 35)
-            }));
+        this.items = new Array(1000).fill(null).map(this.fill.bind(this));
 
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px">
@@ -37,6 +31,26 @@ export class TableDemoComponent implements OnInit {
     </table>
 </ag-virtual-scroll>
         `;
+    }
+
+    fill(x, i) {
+        return { 
+            id: this.items.length + i + 1,
+            name: `Test ${this.items.length + i + 1}`,
+            price: Math.floor(Math.random() * (99999 - 100) + 100) / 100
+        }
+    }
+
+    add() {
+        this.items = [ ...this.items, ...new Array(1000).fill(null).map(this.fill.bind(this)) ];
+    }
+
+    remove() {
+        if (this.items.length) {
+            let start = 0;
+            let end = (this.items.length < 1000 ? 0 : this.items.length - 1000) ;
+            this.items = this.items.slice(start, end);
+        }
     }
 
     ngOnInit() {
