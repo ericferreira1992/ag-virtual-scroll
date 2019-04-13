@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, forwardRef, Inject } from '@angular/core';
 import { AgVsRenderEvent } from '../../../../../src/ag-virtual-scroll/classes/ag-vs-render-event.class';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-list-demo',
@@ -11,34 +12,29 @@ export class ListDemoComponent implements OnInit {
 
     public strCode: string;
 
-    constructor() {
-        this.items = new Array(1000).fill(null).map(this.fill.bind(this));
+    constructor(
+        @Inject(forwardRef(() => AppComponent)) public parent: AppComponent
+    ) {
+        this.items = new Array(1000).fill(null).map(this.parent.getMock);
 
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
-    <div class="demo-item" *ngFor="let item of vs.items">
+    <div *ngFor="let item of vs.items" class="demo-item">
         <div>
-            <span>{{item.id}}</span>
+            <img [src]="item.avatar"/>
         </div>
         <div>
-            {{item.name}}<br/>
-            {{item.price | currency}}
+            <strong>{{item.name}}</strong>
+            <p>Phone: {{item.phone}}</p>
+            <p>E-mail: {{item.email}}</p>
         </div>
     </div>
 </ag-virtual-scroll>
         `;
     }
 
-    fill(x, i) {
-        return { 
-            id: this.items.length + i + 1,
-            name: `Test ${this.items.length + i + 1}`,
-            price: Math.floor(Math.random() * (99999 - 100) + 100) / 100
-        }
-    }
-
     add() {
-        this.items = [ ...this.items, ...new Array(1000).fill(null).map(this.fill.bind(this)) ];
+        this.items = [ ...this.items, ...new Array(1000).fill(null).map(this.parent.getMock) ];
     }
 
     remove() {

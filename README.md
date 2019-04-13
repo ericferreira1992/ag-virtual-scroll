@@ -18,7 +18,7 @@ He also work with differents items height.
     </div>
 </ag-virtual-scroll>
 ```
-![](use_example.png)
+![](demo.gif)
 
 ## ⚠️Important⚠️
 - Define a ``min-row-height`` to increase virtualization performance.

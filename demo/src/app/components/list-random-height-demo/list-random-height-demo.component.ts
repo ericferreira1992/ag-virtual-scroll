@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, forwardRef, Inject } from '@angular/core';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-list-random-height-demo',
@@ -10,8 +11,10 @@ export class ListRandomHeightDemoComponent implements OnInit {
 
     public strCode: string;
 
-    constructor() {
-        this.items = new Array(1000).fill(null).map(this.fill.bind(this));
+    constructor(
+        @Inject(forwardRef(() => AppComponent)) public parent: AppComponent
+    ) {
+        this.items = new Array(1000).fill(null).map(this.parent.getMock);
 
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
@@ -28,17 +31,8 @@ export class ListRandomHeightDemoComponent implements OnInit {
         `;
     }
 
-    fill(x, i) {
-        return { 
-            id: this.items.length + i + 1,
-            name: `Test ${this.items.length + i + 1}`,
-            price: Math.floor(Math.random() * (99999 - 100) + 100) / 100,
-            height: Math.max(Math.floor(Math.random() * 150), 0)
-        }
-    }
-
     add() {
-        this.items = [ ...this.items, ...new Array(1000).fill(null).map(this.fill.bind(this)) ];
+        this.items = [ ...this.items, ...new Array(1000).fill(null).map(this.parent.getMock) ];
     }
 
     remove() {
