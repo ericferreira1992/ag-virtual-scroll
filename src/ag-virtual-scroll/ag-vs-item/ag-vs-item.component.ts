@@ -1,0 +1,54 @@
+import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, OnInit, HostBinding, ApplicationRef, ViewChild, TemplateRef } from '@angular/core';
+import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
+
+@Component({
+	selector: 'ag-vs-item',
+	templateUrl: './ag-vs-item.component.html',
+    styles: [
+        `:host {
+            display: block;
+        }
+        
+        :host > ng-template {
+            display: inherit;
+            width: inherit;
+            height: inherit;
+        }`
+    ]
+})
+export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
+    @HostBinding('class.ag-vs-item') public class: boolean = true;
+
+    @ViewChild('temp') public temp: TemplateRef<any>;
+
+    @Input('sticky') public sticky: boolean = false;
+
+    public get el() { return this.elRef && this.elRef.nativeElement; }
+
+    public viewOk: boolean = false;
+
+    constructor(
+        public elRef: ElementRef<HTMLElement>,
+        public appRef: ApplicationRef
+	) {
+    }
+    
+    ngOnInit() {
+    }
+
+    ngAfterViewInit() {
+    }
+	
+	ngOnChanges(changes: SimpleChanges) {
+    }
+
+    public forceUpdateInputs() {
+        this.viewOk = false;
+        this.appRef.tick();
+        this.viewOk = true;
+    }
+
+    public getHtml() {
+       return this.el.outerHTML;
+    }
+}

@@ -61,7 +61,8 @@
         display: table;
         width: 100%;
 
-        > div {
+        .demo-item-left,
+        .demo-item-right {
             display: table-cell;
             vertical-align: middle;
             padding: 10px;
@@ -77,10 +78,10 @@
                 display: block;
                 padding-bottom: 4px;
             }
+        }
 
-            &:first-child {
-                width: 50px;
-            }
+        .demo-item-left {
+            width: 50px;
         }
 
         &:last-child {

@@ -19,10 +19,10 @@ export class ListRandomHeightDemoComponent implements OnInit {
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
     <div class="demo-item" *ngFor="let item of vs.items">
-        <div>
+        <div class="demo-item-left">
             <span>{{item.id}}</span>
         </div>
-        <div [style.height.px]="item.height">
+        <div class="demo-item-right" [style.height.px]="item.height">
             <strong>{{item.name}}</strong><br/>
             {{item.price | currency}}
         </div>

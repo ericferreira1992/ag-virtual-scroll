@@ -11,6 +11,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import xml from 'highlight.js/lib/languages/xml';
 import scss from 'highlight.js/lib/languages/scss';
 import typescript from 'highlight.js/lib/languages/typescript';
+import { ListStickyComponent } from './components/list-sticky/list-sticky.component';
 
 export function hljsLanguages() {
     return [
@@ -30,6 +31,7 @@ export function hljsLanguages() {
     ],
     declarations: [
         AppComponent,
+        ListStickyComponent,
         TableDemoComponent,
         ListDemoComponent,
         ListRandomHeightDemoComponent

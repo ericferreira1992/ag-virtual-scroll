@@ -1,26 +1,26 @@
 <div class="demo-container">
     <div class="demo-viewer">
         <h4>
-            Example 01
+            Example 00
         </h4>
-        <span>Items with equals heights</span>
+        <span>Items with sticky in viewport</span>
 
         <div class="buttons">
             <button (click)="remove()">ADD <strong>-1000</strong></button>
             <button (click)="add()">ADD <strong>+1000</strong></button>
         </div>
 
-        <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
-            <div class="demo-item" *ngFor="let item of vs.items">
+        <ag-virtual-scroll #vs [items]="items" height="400px" min-row-height="69" class="box-border">
+            <ag-vs-item *ngFor="let item of vs.items; let i = index" class="demo-item" [sticky]="item.id === 3 || item.id === 7">
                 <div class="demo-item-left">
-                    <img [src]="item.avatar" [style.borderColor]="item.color" [style.backgroundColor]="item.color" />
+                    <img [src]="item.avatar"/>
                 </div>
                 <div class="demo-item-right">
-                    <strong [style.color]="item.color">{{item.name}}</strong>
+                    <strong>{{item.name}}</strong>
                     <p>Phone: {{item.phone}}</p>
                     <p>E-mail: {{item.email}}</p>
                 </div>
-            </div>
+            </ag-vs-item>
         </ag-virtual-scroll>
         <div class="demo-info">
             <div>

@@ -3,11 +3,11 @@ import { AgVsRenderEvent } from '../../../../../src/ag-virtual-scroll/classes/ag
 import { AppComponent } from 'src/app/app.component';
 
 @Component({
-  selector: 'app-list-demo',
-  templateUrl: './list-demo.component.html',
-  styleUrls: ['./list-demo.component.scss']
+  selector: 'app-list-sticky',
+  templateUrl: './list-sticky.component.html',
+  styleUrls: ['./list-sticky.component.scss']
 })
-export class ListDemoComponent implements OnInit {
+export class ListStickyComponent implements OnInit {
     public items: any[] = [];
 
     public strCode: string;
@@ -15,11 +15,11 @@ export class ListDemoComponent implements OnInit {
     constructor(
         @Inject(forwardRef(() => AppComponent)) public parent: AppComponent
     ) {
-        this.items = new Array(1000).fill(null).map(this.parent.getMock);
+        this.items = new Array(1000).fill(null).map((item, index) => ({ id: (index + 1), ...this.parent.getMock() }));
 
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
-    <div *ngFor="let item of vs.items" class="demo-item">
+    <ag-vs-item *ngFor="let item of vs.items; let i = index" class="demo-item" [sticky]="item.id === 3">
         <div class="demo-item-left">
             <img [src]="item.avatar"/>
         </div>
@@ -28,7 +28,7 @@ export class ListDemoComponent implements OnInit {
             <p>Phone: {{item.phone}}</p>
             <p>E-mail: {{item.email}}</p>
         </div>
-    </div>
+    </ag-vs-item>
 </ag-virtual-scroll>
         `;
     }
@@ -40,14 +40,11 @@ export class ListDemoComponent implements OnInit {
     remove() {
         if (this.items.length) {
             let start = 0;
-            let end = (this.items.length < 1000 ? 0 : this.items.length - 1000) ;
+            let end = (this.items.length < 1000 ? 0 : this.items.length - 1000);
             this.items = this.items.slice(start, end);
         }
     }
 
     ngOnInit() {
-    }
-    
-    onItemsRender(event: AgVsRenderEvent<any>) {
     }
 }
