@@ -19,6 +19,7 @@
                     <strong>{{item.name}}</strong>
                     <p>Phone: {{item.phone}}</p>
                     <p>E-mail: {{item.email}}</p>
+                    <div class="btn-check" [ngClass]="{'checked': item.sticky }" (click)="item.sticky = !item.sticky"></div>
                 </div>
             </ag-vs-item>
         </ag-virtual-scroll>

@@ -2,4 +2,4 @@
     <ng-content></ng-content>
 </ng-template>
 
-<ng-template [ngTemplateOutlet]="temp"></ng-template>
+<ng-template *ngIf="temp" [ngTemplateOutlet]="temp"></ng-template>

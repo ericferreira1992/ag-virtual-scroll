@@ -2,6 +2,11 @@
 <div #itemsContainer class="items-container" [style.transform]="'translateY(' + paddingTop + 'px)'" [ngClass]="{ 'sticked': currentStickyItem }">
     <ng-content></ng-content>
 </div>
-<ag-vs-item *ngIf="currentStickyItem" [class]="currentStickyItem.comp.el.classList.value | stickedClasses" [style.top.px]="currentScroll - (currentStickyItem.diffTop ? currentStickyItem.diffTop : 0)">
-    <ng-template *ngIf="currentStickyItem?.comp?.temp" [ngTemplateOutlet]="currentStickyItem.comp.temp"></ng-template>
+<ag-vs-item *ngIf="currentStickyItem?.comp"
+    [class]="currentStickyItem.comp.el.classList.value | stickedClasses"
+    [style.top.px]="currentScroll - (currentStickyItem.diffTop ? currentStickyItem.diffTop : 0)"
+    [style.height.px]="currentStickyItem.height"
+    [style.minHeight.px]="currentStickyItem.height"
+>
+    <ng-template *ngIf="currentStickyItem.comp.temp" [ngTemplateOutlet]="currentStickyItem.comp.temp"></ng-template>
 </ag-vs-item>

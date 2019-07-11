@@ -1,7 +1,7 @@
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer, OnInit, Output, EventEmitter, QueryList, ContentChildren, AfterContentChecked } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer, OnInit, Output, EventEmitter, QueryList, ContentChildren, AfterContentChecked, OnDestroy } from '@angular/core';
 import { AgVsRenderEvent } from './classes/ag-vs-render-event.class';
 import { AgVsItemComponent } from './ag-vs-item/ag-vs-item.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscriber, Subscription } from 'rxjs';
 
 @Component({
 	selector: 'ag-virtual-scroll',
@@ -29,7 +29,9 @@ import { Observable } from 'rxjs';
         }
 
         :host::ng-deep .items-container.sticked > .ag-vs-item:last-child {
-            display: none;
+            /* display: none; */
+            position: absolute;
+            left: -100%;
         }
 
         :host::ng-deep > .ag-vs-item {
@@ -41,7 +43,7 @@ import { Observable } from 'rxjs';
         }`
     ]
 })
-export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, AfterContentChecked {
+export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy, AfterContentChecked {
     @ViewChild('itemsContainer') private itemsContainerElRef: ElementRef<HTMLElement>;
 
     @ContentChildren(AgVsItemComponent) private queryVsItems: QueryList<AgVsItemComponent>;
@@ -54,23 +56,45 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     public items: any[] = [];
 
-    private _currentStickyItem: StickyItem;
-    public get currentStickyItem() { return this._currentStickyItem; }
-    public set currentStickyItem(value: StickyItem) {
-        if (value !== this.prevStickyItem)
-            this.prevStickyItem = this.currentStickyItem;
-        else
-            this.prevStickyItem = null;
+    private subscripAllVsItem: { comp: AgVsItemComponent, subscrip: Subscription }[] = [];
 
-        this._currentStickyItem = value;
+    private subscripCurrentSticky: Subscription;
+    private subscripPrevSticky: Subscription;
+    private subscripNextSticky: Subscription;
+
+    private _indexCurrentSticky: number = -1;
+    private get indexCurrentSticky() { return this._indexCurrentSticky; }
+    private set indexCurrentSticky(value: number) {
+        this._indexCurrentSticky = value;
+
+        let currentIsPrev = value === this.indexPrevSticky;
+
+        if (!currentIsPrev && value >= 0) {
+            this.findCurrentStickyByIndex();
+        }
+        else {
+            this.indexNextSticky = -1;
+            this.currentStickyItem = null;
+        }
 
         this.prepareDataItems();
     }
+    
+    private get indexPrevSticky() { return this.indexesPrevStick.length ? this.indexesPrevStick[this.indexesPrevStick.length - 1] : -1; }
+    private set indexPrevSticky(value: number) {
+        if (value < 0) {
+            if (this.indexesPrevStick.length > 0)
+                this.indexesPrevStick = this.indexesPrevStick.slice(0, this.indexesPrevStick.length - 1);
+        }
+        else
+            this.indexesPrevStick.push(value);
+    }
 
-    public prevStickyItem: StickyItem;
-    public nextStickyItem: StickyItem;
+    private indexNextSticky: number = -1;
 
-    public diffNextStickyItem: number = 0;
+    private indexesPrevStick: number[] = [];
+
+    private currentStickyItem: StickyItem;
 
     public currentScroll: number = 0;
     public contentHeight: number = 0;
@@ -106,9 +130,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 	}
 
     ngAfterViewInit() {
-        setTimeout(() => {
-            this.queryVsItems.changes.subscribe(() => this.checkStickItem(this.scrollIsUp));
-        });
+        this.queryVsItems.changes.subscribe(() => this.checkStickItem(this.scrollIsUp));
 	}
 
     ngOnInit() {
@@ -132,14 +154,15 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
 			if ('originalItems' in changes) {
                 if (!this.originalItems) this.originalItems = [];
-                this.previousItemsHeight = new Array(this.originalItems.length).fill(null);
+                this.previousItemsHeight = new Array(this.originalItems.length).fill(this.minRowHeight);
                 
                 if (this.el.scrollTop !== 0)
                     this.el.scrollTop = 0;
                 else {
                     this.currentScroll = 0;
-                    this.prepareDataVirtualScroll();
+                    this.prepareDataItems();
                     this.checkIsTable();
+                    this.queryVsItems.notifyOnChanges();
                 }
 			}
 		});
@@ -220,9 +243,8 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         this.startIndex = dimensions.itemsThatAreGone;
         this.endIndex = Math.min((this.startIndex + Math.floor(this.el.clientHeight / this.minRowHeight) + 2), (this.originalItems.length - 1));
 
-        if (this.currentStickyItem) {
-            this.currentStickyItem.vsIndex = this.endIndex + 1;
-            this.items = [ ...this.originalItems.slice(this.startIndex, this.endIndex), this.originalItems[this.currentStickyItem.index] ];
+        if (this.indexCurrentSticky >= 0) {
+            this.items = [ ...this.originalItems.slice(this.startIndex, this.endIndex), this.originalItems[this.indexCurrentSticky] ];
         }
         else
             this.items = this.originalItems.slice(this.startIndex, this.endIndex);
@@ -300,71 +322,118 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     private checkStickItem(up: boolean) {
         if (!this.isTable && this.vsItems.length > 0) {
             this.updateVsItems().subscribe(() => {
-                if (this.currentStickyItem) {
-                    if (!this.nextStickyItem)
-                        this.nextStickyItem = this.getNextStickyItem(up);
+                if (this.indexCurrentSticky >= 0) {
+
+                    if (!this.currentStickyItem) {
+                        this.findCurrentStickyByIndex(true);
+                        return;
+                    }
+
+                    if (this.indexNextSticky === -1)
+                        this.indexNextSticky = this.getIndexNextSticky(up);
     
                     if (this.currentStickIsEnded(up)) {
                         if (!up) {
-                            this.currentStickyItem = this.getCurrentStickyItem(up);
-                            this.nextStickyItem = this.getNextStickyItem(up);
+                            this.indexPrevSticky = this.indexCurrentSticky;
+                            this.indexCurrentSticky = this.getIndexCurrentSticky(up);
+                            this.indexNextSticky = this.getIndexNextSticky(up);
                         }
                         else {
-                            if (this.prevStickyItem) {
-                                this.nextStickyItem = this.currentStickyItem;
-
-                                let offsetBottom = this.paddingTop + this.prevStickyItem.height + Math.abs(this.el.scrollTop - this.paddingTop);
-                                this.currentStickyItem = Object.assign(this.prevStickyItem, { diffTop: Math.max(0, offsetBottom - this.nextStickyItem.offsetTop) });
+                            if (this.indexPrevSticky >= 0) {
+                                this.setPrevAsCurrentSticky();
                             }
                             else {
-                                this.currentStickyItem = this.getCurrentStickyItem(up);
+                                this.indexCurrentSticky = this.getIndexCurrentSticky(up);
 
-                                if (this.currentStickyItem)
-                                    this.nextStickyItem = this.getNextStickyItem(up);
+                                if (this.indexCurrentSticky >= 0)
+                                    this.indexNextSticky = this.getIndexNextSticky(up);
                                 else
-                                    this.nextStickyItem = null;
+                                    this.indexNextSticky = null;
                             }
                         }
                     }
                 }  
                 else {
-                    this.currentStickyItem = this.getCurrentStickyItem(up);
-                    this.nextStickyItem = this.getNextStickyItem(up);
+                    this.indexCurrentSticky = this.getIndexCurrentSticky(up);
+                    this.indexNextSticky = this.getIndexNextSticky(up);
                 }        
             });
         }
         else {
-            this.nextStickyItem = null;
-            this.currentStickyItem = null;
+            this.indexCurrentSticky = -1;
+            this.indexNextSticky = -1;
         }
     }
 
-    private updateVsItems() {
-        return new Observable<void>((subscriber) => {
-            let interval = setInterval(() => {
-                let ok = this.vsItems.every((vsItem, vsIndex) => {
-                    try { vsItem.forceUpdateInputs(); }
-                    catch { return false; }
-                    
-                    return true;
-                });
+    private findCurrentStickyByIndex(afterPrev: boolean = false) {
+        let vsIndex = 0;
+        let lastVsIndex = this.vsItems.length - 1;
+        for(let vsItem of this.vsItems) {
+            let index = this.startIndex + vsIndex;
 
-                if (ok) {
-                    clearInterval(interval);
-                    subscriber.next();
-                }
-            });
-        });
+            if ((!afterPrev && this.indexCurrentSticky === index) || (afterPrev && vsIndex === lastVsIndex)) {
+                let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+                this.currentStickyItem = new StickyItem({ comp: vsItem, index: index, offsetTop: offsetTop, height: vsItem.el.offsetHeight });
+                break;
+            }
+            
+            vsIndex++;
+        }
+    }
+
+    private setPrevAsCurrentSticky() {
+        this.indexCurrentSticky = this.indexPrevSticky;
+        this.indexPrevSticky = -1;
+    }
+
+    private getIndexCurrentSticky(up: boolean) {
+        let vsIndex = 0;
+        for (let vsItem of this.vsItems) {
+            let index = vsIndex + this.startIndex;
+
+            let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+            
+            if (vsItem && vsItem.sticky &&
+                this.el.scrollTop >= offsetTop &&
+                (this.indexCurrentSticky === -1 || index !== this.indexCurrentSticky)
+            )
+                return index;
+
+            vsIndex++;
+        };
+        
+        return -1;
+    }
+
+    private getIndexNextSticky(up: boolean) {
+        if (this.indexCurrentSticky >= 0) {
+            let start = up ? this.vsItems.length : 0;
+            let end = up ? -1 : this.vsItems.length;
+            for(let vsIndex = start; vsIndex !== end; vsIndex += up ? (-1) : 1) {
+                let index = vsIndex + this.startIndex;
+                let vsItem = this.vsItems[vsIndex];
+
+                if (vsItem && vsItem.sticky &&
+                    (this.indexCurrentSticky === -1 || index !== this.indexCurrentSticky) &&
+                    (this.indexCurrentSticky === -1 || vsIndex !== (end - 1))
+                )
+                    return index;
+            }
+        }
+
+        return -1;
     }
 
     private currentStickIsEnded(up: boolean) {
-        let currentHeight = this.currentStickyItem.height; //this.el.scrollTop + currentHeight + Math.abs(this.el.scrollTop - this.paddingTop);
+        let currentHeight = this.currentStickyItem.height;
         
         if (!up || this.currentStickyItem.diffTop > 0) {
             let offsetBottom = this.paddingTop + currentHeight + Math.abs(this.el.scrollTop - this.paddingTop);
-            if (this.nextStickyItem && offsetBottom >= this.nextStickyItem.offsetTop) {
-                let newDiffTop = offsetBottom - this.nextStickyItem.offsetTop;
-                if (newDiffTop > currentHeight) {
+            let offsetTopNext = this.indexNextSticky >= 0 ? this.previousItemsHeight.slice(0, this.indexNextSticky).reduce((prev, curr) => (prev + curr), 0) : null;
+            
+            if (offsetTopNext !== null && offsetBottom >= offsetTopNext) {
+                let newDiffTop = offsetBottom - offsetTopNext;
+                if (newDiffTop >= currentHeight) {
                     this.currentStickyItem.diffTop = currentHeight;
                     return true;
                 }
@@ -384,53 +453,44 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         return false;
     }
 
-    private getCurrentStickyItem(up: boolean) {
-        let index = -1;
-        let offsetTop = 0;
-        let vsItem  = this.vsItems.find((vsItem, virtualIndex) => {
-            index = virtualIndex + this.startIndex;
-
-            offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
-            
-            if (vsItem && vsItem.sticky && (!this.currentStickyItem || index !== this.currentStickyItem.index))
-                return vsItem.sticky && this.el.scrollTop >= offsetTop;
-            else
-                return false;
-        });
-
-        if (vsItem)
-            return  new StickyItem({ comp: vsItem, index: index, offsetTop: offsetTop, height: vsItem.el.clientHeight });
-        return null;
-    }
-
-    private getNextStickyItem(up: boolean) {
-        if (this.currentStickyItem) {
-            let start = up ? this.vsItems.length : 0;
-            let end = up ? -1 : this.vsItems.length;
-            for(let virtualIndex = start; virtualIndex !== end; virtualIndex += up ? (-1) : 1) {
-                let index = virtualIndex + this.startIndex;
-                let vsItem = this.vsItems[virtualIndex];
-
-                let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
-
-                if (vsItem && vsItem.sticky && (!this.currentStickyItem || index !== this.currentStickyItem.index) && (!this.currentStickyItem || index !== end))
-                    return  new StickyItem({
-                        comp: vsItem,
-                        index: index,
-                        offsetTop: offsetTop,
-                        vsIndex: virtualIndex,
-                        isUp: up,
-                        height: vsItem.el.clientHeight
-                    });
+    private updateVsItems() {
+        return new Observable<void>((subscriber) => {
+            if (this.subscripAllVsItem.length) {
+                this.subscripAllVsItem.forEach((item) => item.subscrip.unsubscribe());
+                this.subscripAllVsItem = [];
             }
-        }
 
-        return null;
+            let interval = setInterval(() => {
+                let ok = this.vsItems.every((vsItem, vsIndex) => {
+                    let index = this.startIndex + vsIndex;
+
+                    if (!this.subscripAllVsItem.some(item => item.comp !== vsItem))
+                        this.subscripAllVsItem.push({
+                            comp: vsItem,
+                            subscrip: vsItem.onStickyChange.subscribe((sticky) => {
+                                console.log(vsIndex, 'CHANGED', sticky);
+                                this.queryVsItems.notifyOnChanges();
+                            })
+                        });
+
+                    try { vsItem.forceUpdateInputs(); }
+                    catch { return false; }
+
+                    return true;
+                });
+
+                if (ok) {
+                    clearInterval(interval);
+                    subscriber.next();
+                }
+            });
+        });
     }
 
-    private updateCurrentStickyItem(up: boolean) {
-        if (this.currentStickyItem) {
-        }
+    ngOnDestroy() {
+        if (this.subscripCurrentSticky) this.subscripCurrentSticky.unsubscribe();
+        if (this.subscripPrevSticky) this.subscripPrevSticky.unsubscribe();
+        if (this.subscripNextSticky) this.subscripNextSticky.unsubscribe();
     }
 }
 

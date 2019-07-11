@@ -1,5 +1,6 @@
-import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, OnInit, HostBinding, ApplicationRef, ViewChild, TemplateRef } from '@angular/core';
+import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, OnInit, HostBinding, ApplicationRef, ViewChild, TemplateRef, EventEmitter } from '@angular/core';
 import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'ag-vs-item',
@@ -27,6 +28,10 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     public viewOk: boolean = false;
 
+    private numberChanges: number = 0;
+
+    public onStickyChange = new EventEmitter<boolean>(false);
+
     constructor(
         public elRef: ElementRef<HTMLElement>,
         public appRef: ApplicationRef
@@ -40,6 +45,9 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
     }
 	
 	ngOnChanges(changes: SimpleChanges) {
+        if ('sticky' in changes) {
+            this.onStickyChange.next(this.sticky);
+        }
     }
 
     public forceUpdateInputs() {

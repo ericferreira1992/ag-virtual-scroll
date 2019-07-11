@@ -15,7 +15,7 @@ export class ListStickyComponent implements OnInit {
     constructor(
         @Inject(forwardRef(() => AppComponent)) public parent: AppComponent
     ) {
-        this.items = new Array(1000).fill(null).map((item, index) => ({ id: (index + 1), ...this.parent.getMock() }));
+        this.items = new Array(1000).fill(null).map((item, index) => ({ id: (index + 1), sticky: false, ...this.parent.getMock() }));
 
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
