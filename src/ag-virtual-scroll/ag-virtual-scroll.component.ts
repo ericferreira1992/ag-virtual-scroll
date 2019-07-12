@@ -57,10 +57,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     private subscripAllVsItem: { comp: AgVsItemComponent, subscrip: Subscription }[] = [];
 
-    private subscripCurrentSticky: Subscription;
-    private subscripPrevSticky: Subscription;
-    private subscripNextSticky: Subscription;
-
     private _indexCurrentSticky: number = -1;
     private get indexCurrentSticky() { return this._indexCurrentSticky; }
     private set indexCurrentSticky(value: number) {
@@ -101,7 +97,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     private indexesPrevStick: number[] = [];
 
-    private currentStickyItem: StickyItem;
+    public currentStickyItem: StickyItem;
 
     public currentScroll: number = 0;
     public contentHeight: number = 0;
@@ -592,9 +588,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     ngOnDestroy() {
-        if (this.subscripCurrentSticky) this.subscripCurrentSticky.unsubscribe();
-        if (this.subscripPrevSticky) this.subscripPrevSticky.unsubscribe();
-        if (this.subscripNextSticky) this.subscripNextSticky.unsubscribe();
     }
 }
 

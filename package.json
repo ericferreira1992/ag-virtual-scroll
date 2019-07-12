@@ -8,6 +8,7 @@
     "deploy-git-pages": "pushd demo && ng build --aot --prod --base-href=/ag-virtual-scroll/ && node ../node_modules/gh-pages/bin/gh-pages -d dist",
     "build-lib": "rimraf dist && npm run packagr && node copy && cd dist && npm pack",
     "publish-pkg": "pushd dist && npm publish",
+    "build-and-publish": "npm run build-lib && npm run publish-pkg",
     "packagr": "ng-packagr -p src/package.json"
   },
   "engines": {
