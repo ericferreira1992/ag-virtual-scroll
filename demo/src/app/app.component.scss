@@ -19,6 +19,8 @@
             float: right;
             font-size: 13px;
             padding-top: 2px;
+            color: #FFF;
+            text-align: center;
 
             > a {
                 display: table;
@@ -34,6 +36,10 @@
                     padding-left: 10px;
                     padding-top: 8px;
                 }
+            }
+
+            > span {
+                font-size: 11px;
             }
         }
     }

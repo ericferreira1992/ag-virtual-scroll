@@ -1,9 +1,9 @@
 <div class="demo-container">
     <div class="demo-viewer">
         <h4>
-            Example 00
+            Example 03
         </h4>
-        <span>Items with sticky in viewport</span>
+        <span>Items with sticky in viewport, using <strong>ag-vs-item</strong></span>
 
         <div class="buttons">
             <button (click)="remove()">ADD <strong>-1000</strong></button>
@@ -11,15 +11,15 @@
         </div>
 
         <ag-virtual-scroll #vs [items]="items" height="400px" min-row-height="69" class="box-border">
-            <ag-vs-item *ngFor="let item of vs.items; let i = index" class="demo-item" [sticky]="item.id === 3 || item.id === 7">
+            <ag-vs-item *ngFor="let item of vs.items" class="demo-item" [sticky]="item.sticky">
                 <div class="demo-item-left">
-                    <img [src]="item.avatar"/>
+                    <img [src]="item.avatar" [style.borderColor]="item.color" [style.backgroundColor]="item.color"/>
                 </div>
                 <div class="demo-item-right">
                     <strong>{{item.name}}</strong>
                     <p>Phone: {{item.phone}}</p>
                     <p>E-mail: {{item.email}}</p>
-                    <div class="btn-check" [ngClass]="{'checked': item.sticky }" (click)="item.sticky = !item.sticky"></div>
+                    <div class="btn-check" [class.checked]="item.sticky" (click)="item.sticky = !item.sticky"></div>
                 </div>
             </ag-vs-item>
         </ag-virtual-scroll>

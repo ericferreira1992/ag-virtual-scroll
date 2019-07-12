@@ -28,8 +28,7 @@ import { Observable, Subscriber, Subscription } from 'rxjs';
             height: 100%;
         }
 
-        :host::ng-deep .items-container.sticked > .ag-vs-item:last-child {
-            /* display: none; */
+        :host::ng-deep .items-container.sticked-outside > .ag-vs-item:last-child {
             position: absolute;
             left: -100%;
         }
@@ -73,21 +72,29 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
             this.findCurrentStickyByIndex();
         }
         else {
-            this.indexNextSticky = -1;
+            if (!currentIsPrev)
+                this.indexNextSticky = -1;
+
+            if (this.currentStickyItem)
+                this.currentStickyItem.comp.isSticked = false;
+            
             this.currentStickyItem = null;
         }
 
         this.prepareDataItems();
     }
     
-    private get indexPrevSticky() { return this.indexesPrevStick.length ? this.indexesPrevStick[this.indexesPrevStick.length - 1] : -1; }
+    private get indexPrevSticky() { return this.indexesPrevStick.length ? this.indexesPrevStick[0] : -1; }
     private set indexPrevSticky(value: number) {
         if (value < 0) {
             if (this.indexesPrevStick.length > 0)
-                this.indexesPrevStick = this.indexesPrevStick.slice(0, this.indexesPrevStick.length - 1);
+                this.indexesPrevStick = this.indexesPrevStick.slice(1);
         }
-        else
+        else if (!this.indexesPrevStick.some(index => index === value))
             this.indexesPrevStick.push(value);
+
+        if (this.indexesPrevStick.length)
+            this.indexesPrevStick = this.indexesPrevStick.sort((a,b) => b-a);
     }
 
     private indexNextSticky: number = -1;
@@ -115,7 +122,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     private get itemsNoSticky() { return this.currentStickyItem ? this.items.filter((item) => this.originalItems[this.currentStickyItem.index] !== item) : this.items; }
 
     public get vsItems() { return (this.queryVsItems && this.queryVsItems.toArray()) || []; }
-    // private get vsItemsNoSticked() { return this.vsItems.filter(vsItem => this.currentStickyItem && this.currentStickyItem.comp === vsItem); }
 
     public get numberItemsRendred(): number { return this.endIndex - this.startIndex; }
     
@@ -241,13 +247,18 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         this.contentHeight = dimensions.contentHeight;
         this.paddingTop = dimensions.paddingTop;
         this.startIndex = dimensions.itemsThatAreGone;
-        this.endIndex = Math.min((this.startIndex + Math.floor(this.el.clientHeight / this.minRowHeight) + 2), (this.originalItems.length - 1));
+        this.endIndex = Math.min((this.startIndex + this.numberItemsCanRender()), (this.originalItems.length - 1));
 
-        if (this.indexCurrentSticky >= 0) {
+        if (this.indexCurrentSticky >= 0 && (this.startIndex > this.indexCurrentSticky || this.endIndex < this.indexCurrentSticky)) {
+            if (this.currentStickyItem)
+                this.currentStickyItem.outside = true;
             this.items = [ ...this.originalItems.slice(this.startIndex, this.endIndex), this.originalItems[this.indexCurrentSticky] ];
         }
-        else
+        else {
+            if (this.currentStickyItem)
+                this.currentStickyItem.outside = false;
             this.items = this.originalItems.slice(this.startIndex, this.endIndex);
+        }
 
         this.onItemsRender.emit(new AgVsRenderEvent<any>({
             items: this.itemsNoSticky,
@@ -257,6 +268,10 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         }));
                 
         this.manipuleRenderedItems();
+    }
+
+    private numberItemsCanRender() {
+        return Math.floor(this.el.clientHeight / this.minRowHeight) + 2;
     }
 
     private manipuleRenderedItems() {
@@ -368,20 +383,69 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     private findCurrentStickyByIndex(afterPrev: boolean = false) {
         let vsIndex = 0;
         let lastVsIndex = this.vsItems.length - 1;
-        for(let vsItem of this.vsItems) {
-            let index = this.startIndex + vsIndex;
+        let diffMaxItemsRender = this.vsItems.length - this.numberItemsCanRender();
 
-            if ((!afterPrev && this.indexCurrentSticky === index) || (afterPrev && vsIndex === lastVsIndex)) {
-                let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
-                this.currentStickyItem = new StickyItem({ comp: vsItem, index: index, offsetTop: offsetTop, height: vsItem.el.offsetHeight });
-                break;
+        if (diffMaxItemsRender > 0 && !this.vsItems.some((vsItem, vsIndex) => this.indexCurrentSticky === (this.startIndex + vsIndex))) {
+            vsIndex = lastVsIndex;
+            let vsItem = this.vsItems[lastVsIndex];
+            let index = this.indexCurrentSticky;
+            let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+            vsItem.isSticked = true;
+            this.currentStickyItem = new StickyItem({
+                comp: vsItem,
+                index: index,
+                vsIndex: vsIndex,
+                offsetTop: offsetTop,
+                height: vsItem.el.offsetHeight,
+                outside: true
+            });
+        }
+        else {
+            for(let vsItem of this.vsItems) {
+                let index = this.startIndex + vsIndex;
+
+                if (this.indexCurrentSticky === index) {
+                    let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+                    vsItem.isSticked = true;
+                    this.currentStickyItem = new StickyItem({
+                        comp: vsItem,
+                        index: index,
+                        vsIndex: vsIndex,
+                        offsetTop: offsetTop,
+                        height: vsItem.el.offsetHeight
+                    });
+                    break;
+                }
+                
+                vsIndex++;
             }
+        }
+
+        if (afterPrev && this.currentStickyItem) {
+            let currentHeight = this.currentStickyItem.height;
+            let offsetBottom = this.paddingTop + currentHeight + Math.abs(this.el.scrollTop - this.paddingTop);
+            let offsetTopNext = this.indexNextSticky >= 0 ? this.previousItemsHeight.slice(0, this.indexNextSticky).reduce((prev, curr) => (prev + curr), 0) : null;
             
-            vsIndex++;
+            if (offsetTopNext !== null && offsetBottom >= offsetTopNext) {
+                let newDiffTop = offsetBottom - offsetTopNext;
+                if (newDiffTop >= currentHeight) {
+                    this.currentStickyItem.diffTop = currentHeight;
+                    return true;
+                }
+                else
+                    this.currentStickyItem.diffTop = newDiffTop;
+            } 
+            else
+                this.currentStickyItem.diffTop = 0;
         }
     }
 
     private setPrevAsCurrentSticky() {
+        let currentSticked = this.currentStickyItem && this.currentStickyItem.comp.sticky;
+
+        if (currentSticked) 
+            this.indexNextSticky = this.indexCurrentSticky;
+
         this.indexCurrentSticky = this.indexPrevSticky;
         this.indexPrevSticky = -1;
     }
@@ -407,17 +471,15 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     private getIndexNextSticky(up: boolean) {
         if (this.indexCurrentSticky >= 0) {
-            let start = up ? this.vsItems.length : 0;
-            let end = up ? -1 : this.vsItems.length;
-            for(let vsIndex = start; vsIndex !== end; vsIndex += up ? (-1) : 1) {
-                let index = vsIndex + this.startIndex;
-                let vsItem = this.vsItems[vsIndex];
+            let vsIndex = 0;
 
-                if (vsItem && vsItem.sticky &&
-                    (this.indexCurrentSticky === -1 || index !== this.indexCurrentSticky) &&
-                    (this.indexCurrentSticky === -1 || vsIndex !== (end - 1))
-                )
+            for (let vsItem of this.vsItems.slice(0, this.numberItemsCanRender())) {
+                let index = vsIndex + this.startIndex;
+
+                if (vsItem.sticky && index > this.indexCurrentSticky)
                     return index;
+
+                vsIndex++;
             }
         }
 
@@ -461,15 +523,23 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
             }
 
             let interval = setInterval(() => {
+                let diffMaxItemsRender = this.vsItems.length - this.numberItemsCanRender();
+                let lastIndex = this.vsItems.length - 1;
                 let ok = this.vsItems.every((vsItem, vsIndex) => {
                     let index = this.startIndex + vsIndex;
 
-                    if (!this.subscripAllVsItem.some(item => item.comp !== vsItem))
+                    if (diffMaxItemsRender > 0 && vsIndex === lastIndex)
+                        index = this.indexCurrentSticky;
+
+                    if (!this.currentStickyItem || vsItem !== this.currentStickyItem.comp)
+                        vsItem.isSticked = false;
+
+                    if (!this.subscripAllVsItem.some(item => item.comp === vsItem))
                         this.subscripAllVsItem.push({
                             comp: vsItem,
                             subscrip: vsItem.onStickyChange.subscribe((sticky) => {
-                                console.log(vsIndex, 'CHANGED', sticky);
-                                this.queryVsItems.notifyOnChanges();
+                                console.log(index, 'CHANGED', sticky);
+                                this.onStickyComponentChanged(vsItem, index);
                             })
                         });
 
@@ -485,6 +555,40 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
                 }
             });
         });
+    }
+
+    private onStickyComponentChanged(vsItem: AgVsItemComponent, index: number) {
+        if (index === this.indexCurrentSticky) {
+            if (!vsItem.sticky) {
+                if (this.indexPrevSticky >= 0) {
+                    this.setPrevAsCurrentSticky();
+                }
+                else {
+                    this.indexCurrentSticky = this.getIndexCurrentSticky(false);
+
+                    if (this.indexCurrentSticky >= 0)
+                        this.indexNextSticky = this.getIndexNextSticky(false);
+                    else
+                        this.indexNextSticky = null;
+                }
+            }
+        }
+        else if ((this.indexCurrentSticky !== -1 && index < this.indexCurrentSticky) || index === this.indexPrevSticky) {
+            if (vsItem.sticky)
+                this.indexPrevSticky = index;
+            else
+                this.indexesPrevStick = this.indexesPrevStick.filter(indexPrev => indexPrev !== index);
+        }
+        else if ((this.indexCurrentSticky !== -1 && index > this.indexCurrentSticky) || index === this.indexNextSticky) {
+            if (vsItem.sticky && (this.indexNextSticky === -1 || index < this.indexNextSticky))
+                this.indexNextSticky = index;
+            else if (!vsItem.sticky)
+                this.indexNextSticky = -1;
+        }
+        else
+            return;
+
+        this.queryVsItems.notifyOnChanges();
     }
 
     ngOnDestroy() {
@@ -503,6 +607,7 @@ export class StickyItem {
     diffTop: number = 0;
     isUp: boolean = false
     height: number = 0;
+    outside: boolean = false;
 
     constructor(obj?: Partial<StickyItem>) {
         if (obj) Object.assign(this, obj);

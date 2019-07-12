@@ -1,3 +1,5 @@
+@import 'src/assets/scss/variables';
+
 :host::ng-deep {
     .btn-check {
         position: absolute;
@@ -7,21 +9,30 @@
         border-radius: 50%;
         width: 30px;
         height: 30px;
-        border: 2px solid rgb(226, 0, 94);
+        border: 2px solid #000;
+        opacity: .2;
+        background: #FFF;
+        transition-duration: 200ms;
+
+        &::after {
+            cursor: pointer;
+            font-size: 17px;
+            content: '✓';
+            font-weight: bold;
+            position: absolute;
+            display: inline-block;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+        }
 
         &.checked {
-            background: rgb(226, 0, 94);
+            background: $color;
+            border-color: $color;
+            opacity: 1;
 
             &::after {
-                cursor: pointer;
-                font-size: 17px;
-                content: '✓';
-                font-weight: bold;
-                position: absolute;
-                display: inline-block;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
                 color: #FFF;
             }
         }

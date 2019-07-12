@@ -28,9 +28,9 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     public viewOk: boolean = false;
 
-    private numberChanges: number = 0;
-
     public onStickyChange = new EventEmitter<boolean>(false);
+
+    public isSticked: boolean = false;
 
     constructor(
         public elRef: ElementRef<HTMLElement>,
@@ -45,9 +45,8 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
     }
 	
 	ngOnChanges(changes: SimpleChanges) {
-        if ('sticky' in changes) {
+        if ('sticky' in changes)
             this.onStickyChange.next(this.sticky);
-        }
     }
 
     public forceUpdateInputs() {
