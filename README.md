@@ -22,7 +22,7 @@ He also work with differents items height.
 
 ## ⚠️Important⚠️
 - Define a ``min-row-height`` to increase virtualization performance.
-- Always define a ``height`` because it will be the one that will do the virutalization of the items.
+- Always define a ``height`` because it will be the one that will do the virtualization of the items.
 - Inform your all data list in ``[items]``.
 - Add ``#vs`` to use in iteration ``*ngFor``.
 
