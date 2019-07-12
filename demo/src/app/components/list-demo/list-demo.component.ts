@@ -12,13 +12,17 @@ export class ListDemoComponent implements OnInit {
 
     public strCode: string;
 
+    private numberItems = 1000;
+
     constructor(
         @Inject(forwardRef(() => AppComponent)) public parent: AppComponent
     ) {
-        this.items = new Array(1000).fill(null).map(this.parent.getMock);
+        this.items = new Array(this.numberItems).fill(null).map(this.parent.getMock);
+
+        console.log(this.items);
 
         this.strCode = `
-<ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
+<ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="69" class="box-border">
     <div *ngFor="let item of vs.items" class="demo-item">
         <div class="demo-item-left">
             <img [src]="item.avatar"/>
@@ -34,20 +38,20 @@ export class ListDemoComponent implements OnInit {
     }
 
     add() {
-        this.items = [ ...this.items, ...new Array(1000).fill(null).map(this.parent.getMock) ];
+        this.items = [ ...this.items, ...new Array(this.numberItems).fill(null).map(this.parent.getMock) ];
     }
 
     remove() {
         if (this.items.length) {
             let start = 0;
-            let end = (this.items.length < 1000 ? 0 : this.items.length - 1000) ;
+            let end = (this.items.length < this.numberItems ? 0 : this.items.length - this.numberItems) ;
             this.items = this.items.slice(start, end);
         }
     }
 
     ngOnInit() {
     }
-    
+
     onItemsRender(event: AgVsRenderEvent<any>) {
     }
 }

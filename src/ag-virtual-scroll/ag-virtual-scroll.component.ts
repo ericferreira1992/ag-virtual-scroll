@@ -1,7 +1,7 @@
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer, OnInit, Output, EventEmitter, QueryList, ContentChildren, AfterContentChecked, OnDestroy } from '@angular/core';
 import { AgVsRenderEvent } from './classes/ag-vs-render-event.class';
 import { AgVsItemComponent } from './ag-vs-item/ag-vs-item.component';
-import { Observable, Subscriber, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
 	selector: 'ag-virtual-scroll',
@@ -30,6 +30,7 @@ import { Observable, Subscriber, Subscription } from 'rxjs';
 
         :host::ng-deep .items-container.sticked-outside > .ag-vs-item:last-child {
             position: absolute;
+            top: 0;
             left: -100%;
         }
 
@@ -156,7 +157,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
 			if ('originalItems' in changes) {
                 if (!this.originalItems) this.originalItems = [];
-                this.previousItemsHeight = new Array(this.originalItems.length).fill(this.minRowHeight);
+                this.previousItemsHeight = new Array(this.originalItems.length).fill(null);
                 
                 if (this.el.scrollTop !== 0)
                     this.el.scrollTop = 0;
@@ -248,12 +249,12 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         if (this.indexCurrentSticky >= 0 && (this.startIndex > this.indexCurrentSticky || this.endIndex < this.indexCurrentSticky)) {
             if (this.currentStickyItem)
                 this.currentStickyItem.outside = true;
-            this.items = [ ...this.originalItems.slice(this.startIndex, this.endIndex), this.originalItems[this.indexCurrentSticky] ];
+            this.items = [ ...this.originalItems.slice(this.startIndex, Math.min(this.endIndex + 1, this.originalItems.length)), this.originalItems[this.indexCurrentSticky] ];
         }
         else {
             if (this.currentStickyItem)
                 this.currentStickyItem.outside = false;
-            this.items = this.originalItems.slice(this.startIndex, this.endIndex);
+            this.items = this.originalItems.slice(this.startIndex, Math.min(this.endIndex + 1, this.originalItems.length));
         }
 
         this.onItemsRender.emit(new AgVsRenderEvent<any>({
@@ -385,7 +386,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
             vsIndex = lastVsIndex;
             let vsItem = this.vsItems[lastVsIndex];
             let index = this.indexCurrentSticky;
-            let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+            let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + (curr ? curr : this.minRowHeight)), 0);
             vsItem.isSticked = true;
             this.currentStickyItem = new StickyItem({
                 comp: vsItem,
@@ -401,7 +402,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
                 let index = this.startIndex + vsIndex;
 
                 if (this.indexCurrentSticky === index) {
-                    let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+                    let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + (curr ? curr : this.minRowHeight)), 0);
                     vsItem.isSticked = true;
                     this.currentStickyItem = new StickyItem({
                         comp: vsItem,
@@ -420,7 +421,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         if (afterPrev && this.currentStickyItem) {
             let currentHeight = this.currentStickyItem.height;
             let offsetBottom = this.paddingTop + currentHeight + Math.abs(this.el.scrollTop - this.paddingTop);
-            let offsetTopNext = this.indexNextSticky >= 0 ? this.previousItemsHeight.slice(0, this.indexNextSticky).reduce((prev, curr) => (prev + curr), 0) : null;
+            let offsetTopNext = this.indexNextSticky >= 0 ? this.previousItemsHeight.slice(0, this.indexNextSticky).reduce((prev, curr) => (prev + (curr ? curr : this.minRowHeight)), 0) : null;
             
             if (offsetTopNext !== null && offsetBottom >= offsetTopNext) {
                 let newDiffTop = offsetBottom - offsetTopNext;
@@ -451,7 +452,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         for (let vsItem of this.vsItems) {
             let index = vsIndex + this.startIndex;
 
-            let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + curr), 0);
+            let offsetTop = this.previousItemsHeight.slice(0, index).reduce((prev, curr) => (prev + (curr ? curr : this.minRowHeight)), 0);
             
             if (vsItem && vsItem.sticky &&
                 this.el.scrollTop >= offsetTop &&
@@ -487,7 +488,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         
         if (!up || this.currentStickyItem.diffTop > 0) {
             let offsetBottom = this.paddingTop + currentHeight + Math.abs(this.el.scrollTop - this.paddingTop);
-            let offsetTopNext = this.indexNextSticky >= 0 ? this.previousItemsHeight.slice(0, this.indexNextSticky).reduce((prev, curr) => (prev + curr), 0) : null;
+            let offsetTopNext = this.indexNextSticky >= 0 ? this.previousItemsHeight.slice(0, this.indexNextSticky).reduce((prev, curr) => (prev + (curr ? curr : this.minRowHeight)), 0) : null;
             
             if (offsetTopNext !== null && offsetBottom >= offsetTopNext) {
                 let newDiffTop = offsetBottom - offsetTopNext;

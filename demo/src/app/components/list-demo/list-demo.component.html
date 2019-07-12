@@ -10,7 +10,7 @@
             <button (click)="add()">ADD <strong>+1000</strong></button>
         </div>
 
-        <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
+        <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="69" class="box-border">
             <div class="demo-item" *ngFor="let item of vs.items">
                 <div class="demo-item-left">
                     <img [src]="item.avatar" [style.borderColor]="item.color" [style.backgroundColor]="item.color" />
