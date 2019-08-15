@@ -30,9 +30,8 @@ export class ListStickyComponent implements OnInit {
             <strong>{{item.name}}</strong>
             <p>Phone: {{item.phone}}</p>
             <p>E-mail: {{item.email}}</p>
-            <div class="btn-check"
-                [class.checked]="item.sticky"
-                (click)="item.sticky = !item.sticky">
+            <div class="btn-check" [class.checked]="item.sticky" (click)="item.sticky = !item.sticky">
+                <mat-icon>done</mat-icon>
             </div>
         </div>
     </ag-vs-item>

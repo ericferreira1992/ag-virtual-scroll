@@ -14,13 +14,13 @@
         background: #FFF;
         transition-duration: 200ms;
 
-        &::after {
+        > .mat-icon {
             cursor: pointer;
-            font-size: 17px;
-            content: '✓';
-            font-weight: bold;
             position: absolute;
-            display: inline-block;
+            display: block;
+            font-size: 22px;
+            width: 22px;
+            height: 22px;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -32,7 +32,7 @@
             border-color: $color;
             opacity: 1;
 
-            &::after {
+            > .mat-icon {
                 color: #FFF;
             }
         }

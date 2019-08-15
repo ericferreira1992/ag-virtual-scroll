@@ -17,10 +17,7 @@ export class ListDemoComponent implements OnInit {
     constructor(
         @Inject(forwardRef(() => AppComponent)) public parent: AppComponent
     ) {
-        this.items = new Array(this.numberItems).fill(null).map(this.parent.getMock);
-
-        console.log(this.items);
-
+        this.refresh();
         this.strCode = `
 <ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="69" class="box-border">
     <div *ngFor="let item of vs.items" class="demo-item">
@@ -47,6 +44,10 @@ export class ListDemoComponent implements OnInit {
             let end = (this.items.length < this.numberItems ? 0 : this.items.length - this.numberItems) ;
             this.items = this.items.slice(start, end);
         }
+    }
+
+    refresh() {
+        this.items = new Array(this.numberItems).fill(null).map(this.parent.getMock);
     }
 
     ngOnInit() {

@@ -10,7 +10,7 @@
             <button (click)="add()">ADD <strong>+1000</strong></button>
         </div>
 
-        <ag-virtual-scroll #vs [items]="items" height="400px" min-row-height="69" class="box-border">
+        <ag-virtual-scroll #vs [items]="items" height="400px" min-row-height="80" class="box-border">
             <ag-vs-item *ngFor="let item of vs.items" class="demo-item" [sticky]="item.sticky">
                 <div class="demo-item-left">
                     <img [src]="item.avatar" [style.borderColor]="item.color" [style.backgroundColor]="item.color"/>
@@ -19,7 +19,9 @@
                     <strong>{{item.name}}</strong>
                     <p>Phone: {{item.phone}}</p>
                     <p>E-mail: {{item.email}}</p>
-                    <div class="btn-check" [class.checked]="item.sticky" (click)="item.sticky = !item.sticky"></div>
+                    <div class="btn-check" [class.checked]="item.sticky" (click)="item.sticky = !item.sticky">
+                        <mat-icon>done</mat-icon>
+                    </div>
                 </div>
             </ag-vs-item>
         </ag-virtual-scroll>

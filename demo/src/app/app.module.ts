@@ -13,6 +13,8 @@ import scss from 'highlight.js/lib/languages/scss';
 import typescript from 'highlight.js/lib/languages/typescript';
 import { ListStickyComponent } from './components/list-sticky/list-sticky.component';
 
+import { MatIconModule } from '@angular/material';
+
 export function hljsLanguages() {
     return [
         { name: 'typescript', func: typescript },
@@ -27,7 +29,8 @@ export function hljsLanguages() {
         HighlightModule.forRoot({
             languages: hljsLanguages
         }),
-        AgVirtualScrollModule
+        AgVirtualScrollModule,
+        MatIconModule
     ],
     declarations: [
         AppComponent,

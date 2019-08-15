@@ -123,6 +123,7 @@
                 margin-top: -25px;
 
                 > button {
+                    outline: 0;
                     float: left;
                     cursor: pointer;
                     border: 1px solid $color;
@@ -132,6 +133,7 @@
                     border-radius: 5px;
                     margin-top: 10px;
                     margin-bottom: 15px;
+                    transition-duration: 200ms;
 
                     &:first-child {
                         margin-right: 7px;
@@ -144,6 +146,17 @@
                     &:hover {
                         background: $color;
                         color: #FFF;
+                    }
+
+                    &.icon {
+                        padding: 2px 5px;
+
+                        > .mat-icon {
+                            display: block;
+                            font-size: 19px;
+                            width: 19px;
+                            height: 19px;
+                        }
                     }
                 }
             }

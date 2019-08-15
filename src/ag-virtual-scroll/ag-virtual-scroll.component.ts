@@ -54,6 +54,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     @Output() private onItemsRender = new EventEmitter<AgVsRenderEvent<any>>();
 
+    public prevOriginalItems: any[] = [];
     public items: any[] = [];
 
     private subscripAllVsItem: { comp: AgVsItemComponent, subscrip: Subscription }[] = [];
@@ -150,23 +151,39 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
                 if (typeof this.minRowHeight === 'string') {
                     if (parseInt(this.minRowHeight))
                         this.minRowHeight = parseInt(this.minRowHeight);
-                    else
+                    else {
+                        console.warn('The [min-row-height] @Input is invalid, the value must be of type "number".')
                         this.minRowHeight = 40;
+                    }
                 }
             }
 
 			if ('originalItems' in changes) {
-                if (!this.originalItems) this.originalItems = [];
-                this.previousItemsHeight = new Array(this.originalItems.length).fill(null);
+                if (!this.originalItems)
+                    this.originalItems = [];
+
+                if (this.currentAndPrevItemsAreDiff()) {
+                    this.previousItemsHeight = new Array(this.originalItems.length).fill(null);
                 
-                if (this.el.scrollTop !== 0)
-                    this.el.scrollTop = 0;
+                    if (this.el.scrollTop !== 0)
+                        this.el.scrollTop = 0;
+                    else {
+                        this.currentScroll = 0;
+                        this.prepareDataItems();
+                        this.checkIsTable();
+                        this.queryVsItems.notifyOnChanges();
+                    }
+                }
                 else {
-                    this.currentScroll = 0;
+                    if (this.originalItems.length > this.prevOriginalItems.length)
+                        this.previousItemsHeight = this.previousItemsHeight.concat(new Array(this.originalItems.length - this.prevOriginalItems.length).fill(null));
+                
                     this.prepareDataItems();
                     this.checkIsTable();
                     this.queryVsItems.notifyOnChanges();
                 }
+
+                this.prevOriginalItems = this.originalItems;
 			}
 		});
     }
@@ -175,6 +192,23 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         let currentContainerWidth = this.itemsContainerEl && this.itemsContainerEl.clientWidth;
         if (currentContainerWidth !== this.containerWidth)
             this.containerWidth = currentContainerWidth;
+        
+        this.manipuleRenderedItems();
+    }
+
+    private currentAndPrevItemsAreDiff() {
+        if (this.originalItems.length >= this.prevOriginalItems.length) {
+            let begin = 0;
+            let end = this.prevOriginalItems.length - 1;
+            for (let i = begin; i <= end; i++) {
+                if (this.originalItems[i] !== this.prevOriginalItems[i])
+                    return true;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
 	private onScroll() {
@@ -194,11 +228,11 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     private registerCurrentItemsHeight() {
-        let childrens = this.getInsideChildrens();
-        for (let i = 0; i < childrens.length; i++) {
-            let children = childrens[i];
+        let children = this.getInsideChildrens();
+        for (let i = 0; i < children.length; i++) {
+            let child = children[i];
             let realIndex = this.startIndex + i;
-            this.previousItemsHeight[realIndex] = children.getBoundingClientRect().height;
+            this.previousItemsHeight[realIndex] = child.getBoundingClientRect().height;
         }
     }
 
@@ -272,24 +306,24 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     private manipuleRenderedItems() {
-        setTimeout(() => {
-            let childrens = this.getInsideChildrens();
-            for (let i = 0; i < childrens.length; i++) {
-                let children = childrens[i] as HTMLElement;
+        let children = this.getInsideChildrens();
+        for (let i = 0; i < children.length; i++) {
+            let child = children[i] as HTMLElement;
+            if (child.style.display !== 'none') {
                 let realIndex = this.startIndex + i;
-                children.style.minHeight = `${this.minRowHeight}px`;
-                children.style.height = `${this.minRowHeight}px`;
+                child.style.minHeight = `${this.minRowHeight}px`;
+                child.style.height = `${this.minRowHeight}px`;
                 
                 let className = (realIndex + 1) % 2 === 0 ? 'even' : 'odd';
                 let unclassName = className == 'even' ? 'odd' : 'even';
 
-                children.classList.add(`ag-virtual-scroll-${className}`);
-                children.classList.remove(`ag-virtual-scroll-${unclassName}`);
+                child.classList.add(`ag-virtual-scroll-${className}`);
+                child.classList.remove(`ag-virtual-scroll-${unclassName}`);
             }
-        });
+        }
     }
 
-    private getInsideChildrens() {
+    private getInsideChildrens(): HTMLCollection {
         let childrens = this.itemsContainerEl.children;
         if (childrens.length > 0) {
             if (childrens[0].tagName.toUpperCase() === 'TABLE') {
@@ -301,17 +335,9 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
                         childrens = childrens[1].children;
                 }
             }
-
-            let childrenJustVisible = [];
-            for (let i = 0; i < childrens.length; i++) {
-                let children = childrens[i] as HTMLElement;
-                if (children.style.display !== 'none')
-                    childrenJustVisible.push(children);
-            }
-
-            return childrenJustVisible;
         }
-        return [];
+
+        return childrens;
     }
 
     private checkIsTable() {
@@ -535,7 +561,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
                         this.subscripAllVsItem.push({
                             comp: vsItem,
                             subscrip: vsItem.onStickyChange.subscribe((sticky) => {
-                                console.log(index, 'CHANGED', sticky);
                                 this.onStickyComponentChanged(vsItem, index);
                             })
                         });
@@ -548,6 +573,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
                 if (ok) {
                     clearInterval(interval);
+                    this.manipuleRenderedItems();
                     subscriber.next();
                 }
             });
