@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer, OnInit, Output, EventEmitter, QueryList, ContentChildren, AfterContentChecked, OnDestroy } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer2, OnInit, Output, EventEmitter, QueryList, ContentChildren, AfterContentChecked, OnDestroy } from '@angular/core';
 import { AgVsRenderEvent } from './classes/ag-vs-render-event.class';
 import { AgVsItemComponent } from './ag-vs-item/ag-vs-item.component';
 import { Observable, Subscription } from 'rxjs';
@@ -129,7 +129,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
     
     constructor(
         private elRef: ElementRef<HTMLElement>,
-        private renderer: Renderer
+        private renderer: Renderer2
 	) {
 	}
 
