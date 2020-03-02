@@ -20,7 +20,7 @@ import { BehaviorSubject } from 'rxjs';
 export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
     @HostBinding('class.ag-vs-item') public class: boolean = true;
 
-    @ViewChild('temp') public temp: TemplateRef<any>;
+    @ViewChild('temp', {static: false}) public temp: TemplateRef<any>;
 
     @Input('sticky') public sticky: boolean = false;
 

@@ -44,7 +44,7 @@ import { Observable, Subscription } from 'rxjs';
     ]
 })
 export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy, AfterContentChecked {
-    @ViewChild('itemsContainer') private itemsContainerElRef: ElementRef<HTMLElement>;
+    @ViewChild('itemsContainer', {static: true}) private itemsContainerElRef: ElementRef<HTMLElement>;
 
     @ContentChildren(AgVsItemComponent) private queryVsItems: QueryList<AgVsItemComponent>;
 
