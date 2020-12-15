@@ -13,7 +13,7 @@ import scss from 'highlight.js/lib/languages/scss';
 import typescript from 'highlight.js/lib/languages/typescript';
 import { ListStickyComponent } from './components/list-sticky/list-sticky.component';
 
-import { MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
 
 export function hljsLanguages() {
     return [
