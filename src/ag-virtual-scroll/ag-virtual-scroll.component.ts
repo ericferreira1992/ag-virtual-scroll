@@ -48,9 +48,9 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     @ContentChildren(AgVsItemComponent) private queryVsItems: QueryList<AgVsItemComponent>;
 
-    @Input('min-row-height') private minRowHeight: number = 40;
-    @Input('height') private height: string = 'auto';
-    @Input('items') private originalItems: any[] = [];
+    @Input('min-row-height') public minRowHeight: number = 40;
+    @Input('height') public height: string = 'auto';
+    @Input('items') public originalItems: any[] = [];
 
     @Output() private onItemsRender = new EventEmitter<AgVsRenderEvent<any>>();
 
