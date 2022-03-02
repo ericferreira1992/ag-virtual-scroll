@@ -1,4 +1,4 @@
-# ag-virtual-scroll (Angular 11+)
+# ag-virtual-scroll (Angular 13+)
 
 Angular Component of virtual-scroll. It easy to use and works light and clean.
 He also work with differents items height.
@@ -21,6 +21,7 @@ He also work with differents items height.
 ![](demo.gif)
 
 ## ⚠️Important⚠️
+- Always wrap the repeat element with a _div_ or _ag-vs-item_, per example: ``<div *ngFor="let item of vs.items">...you structure of content...</div>``.
 - Define a ``min-row-height`` to increase virtualization performance.
 - Always define a ``height`` because it will be the one that will do the virtualization of the items.
 - Inform your all data list in ``[items]``.
