@@ -1,6 +1,4 @@
 import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, OnInit, HostBinding, ApplicationRef, ViewChild, TemplateRef, EventEmitter } from '@angular/core';
-import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'ag-vs-item',

@@ -1,5 +1,4 @@
 import { Component, OnInit, forwardRef, Inject } from '@angular/core';
-import { AgVsRenderEvent } from '../../../../../src/ag-virtual-scroll/classes/ag-vs-render-event.class';
 import { AppComponent } from 'src/app/app.component';
 
 @Component({
