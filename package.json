@@ -9,7 +9,7 @@
     "build-lib": "rimraf dist && npm run packagr && node copy && cd dist && npm pack",
     "publish-pkg": "pushd dist && npm publish",
     "build-and-publish": "npm run build-lib && npm run publish-pkg",
-    "packagr": "ng-packagr -p src/package.json"
+    "packagr": "ng-packagr -p src/ng-package.json"
   },
   "engines": {
     "node": "10.14.1",
@@ -30,8 +30,8 @@
     "express": "^4.17.1",
     "fast-deep-equal": "^2.0.1",
     "gh-pages": "^2.2.0",
-    "highlight.js": "^9.18.1",
-    "ngx-highlightjs": "^3.0.3",
+    "highlight.js": "^11.6.0",
+    "ngx-highlightjs": "^7.0.1",
     "path": "^0.12.7",
     "rxjs": "~6.5.4",
     "tslib": "^2.0.0",
@@ -45,9 +45,9 @@
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.11.1",
-    "codelyzer": "^6.0.0",
+    "codelyzer": "^0.0.28",
     "cpx": "^1.5.0",
-    "ng-packagr": "^14.0.0",
+    "ng-packagr": "^14.2.0",
     "protractor": "~7.0.0",
     "ts-node": "~5.0.1",
     "tsickle": "^0.46.0",
