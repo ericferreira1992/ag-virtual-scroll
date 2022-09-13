@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "pushd demo && ng serve --port=4200 --host=0.0.0.0",
-    "build": "pushd demo && ng build --aot --prod",
-    "deploy-git-pages": "pushd demo && ng build --aot --prod --base-href=/ag-virtual-scroll/ && node ../node_modules/gh-pages/bin/gh-pages -d dist",
+    "build": "pushd demo && ng build -c=production --aot",
+    "deploy-git-pages": "pushd demo && ng build -c=production --aot --base-href=/ag-virtual-scroll/ && node ../node_modules/gh-pages/bin/gh-pages -d dist",
     "build-lib": "rimraf dist && npm run packagr && node copy && cd dist && npm pack",
     "publish-pkg": "pushd dist && npm publish",
     "build-and-publish": "npm run build-lib && npm run publish-pkg",
