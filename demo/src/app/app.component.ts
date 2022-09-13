@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import * as faker from 'src/assets/js/faker.min.js';
+import { faker } from '@faker-js/faker';
 
 @Component({
     selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent {
     getMock() {
         return {
             name: faker.name.firstName() + ' ' + faker.name.lastName(),
-            phone: faker.phone.phoneNumber(),
+            phone: faker.phone.number(),
             color: faker.internet.color(),
             email: faker.internet.email(),
             avatar: faker.image.avatar(),
