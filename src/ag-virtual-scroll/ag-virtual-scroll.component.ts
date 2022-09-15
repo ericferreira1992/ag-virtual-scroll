@@ -218,7 +218,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         this.isTable = this.checkIsTable();
         this.lastScrollIsUp = this.scrollIsUp;
         this.scrollIsUp = up;
-        this.queryVsItems.notifyOnChanges();
+//         this.queryVsItems.notifyOnChanges();
     }
 
     private prepareDataItems() {
