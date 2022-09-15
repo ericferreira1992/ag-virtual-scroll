@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "pushd demo && ng serve --port=4200 --host=0.0.0.0",
+    "start": "pushd demo && ng serve",
     "build": "pushd demo && ng build -c=production --aot",
     "deploy-git-pages": "pushd demo && ng build -c=production --aot --base-href=/ag-virtual-scroll/ && node ../node_modules/gh-pages/bin/gh-pages -d dist",
     "build-lib": "rimraf dist && npm run packagr && node copy && cd dist && npm pack",
