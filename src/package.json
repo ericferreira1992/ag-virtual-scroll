@@ -1,6 +1,6 @@
 {
 	"name": "ag-virtual-scroll",
-	"version": "1.5.2",
+	"version": "1.6.0",
 	"repository": "https://github.com/ericferreira1992/ag-virtual-scroll",
 	"keywords": [
 		"angular",
@@ -30,9 +30,9 @@
 	"license": "MIT",
 	"private": false,
 	"peerDependencies": {
-		"@angular/animations": "^14.0.0",
-		"@angular/common": "^14.0.0",
-		"@angular/compiler": "^14.0.0",
-		"@angular/core": "^14.0.0"
+		"@angular/animations": "^15.0.0",
+		"@angular/common": "^15.0.0",
+		"@angular/compiler": "^15.0.0",
+		"@angular/core": "^15.0.0"
 	}
 }
