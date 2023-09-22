@@ -10,7 +10,6 @@ import { Observable, Subscription } from 'rxjs';
         :host {
             display: block;
             position: relative;
-            height: 100%;
             width: 100%;
             overflow-y: auto;
         }
@@ -138,12 +137,13 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
     ngOnInit() {
         this.renderer.listen(this.el, 'scroll', this.onScroll.bind(this));
+        this.onScroll();
 	}
 	
 	ngOnChanges(changes: SimpleChanges) {
 		setTimeout(() => {
             if ('height' in changes) {
-                this.el.style.height = this.height;
+                this.el.style.maxHeight = this.height;
             }
 
             if ('minRowHeight' in changes) {
@@ -311,7 +311,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
             if (child.style.display !== 'none') {
                 let realIndex = this.startIndex + i;
                 child.style.minHeight = `${this.minRowHeight}px`;
-                child.style.height = `${this.minRowHeight}px`;
                 
                 let className = (realIndex + 1) % 2 === 0 ? 'even' : 'odd';
                 let unclassName = className == 'even' ? 'odd' : 'even';
