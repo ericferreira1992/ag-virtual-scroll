@@ -210,7 +210,11 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         return true;
     }
 
-	private onScroll() {
+	public onScroll() {
+        this.refreshData();
+    }
+
+	public refreshData() {
         let up = this.el.scrollTop < this.currentScroll;
         this.currentScroll = this.el.scrollTop;
 
@@ -218,7 +222,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
         this.isTable = this.checkIsTable();
         this.lastScrollIsUp = this.scrollIsUp;
         this.scrollIsUp = up;
-//         this.queryVsItems.notifyOnChanges();
     }
 
     private prepareDataItems() {
