@@ -22,9 +22,5 @@ import { StickedClassesPipe } from './pipes/sticked-classes.pipe';
         AgVirtualSrollComponent,
         AgVsItemComponent
     ],
-    entryComponents: [
-        AgVirtualSrollComponent,
-        AgVsItemComponent
-    ]
 })
 export class AgVirtualScrollModule { }
