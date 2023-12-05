@@ -1,0 +1,32 @@
+@import '~highlight.js/styles/github.css';
+@import 'assets/scss/variables';
+
+html, body {
+    font-size: 13px;
+    color: #666;
+    font-family: Arial;
+    margin: 0;
+
+    * {
+        box-sizing: border-box;
+    }
+}
+
+h4 {
+    display: table;
+    font-size: 20px;
+    margin: 0;
+    color: $color;
+}
+
+h3 {
+    display: table;
+    font-size: 16px;
+    margin: 0;
+}
+
+p {
+    font-size: 14px;
+    margin: 0;
+    font-size: 12px;
+}
