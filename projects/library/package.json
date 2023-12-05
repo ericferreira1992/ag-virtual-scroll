@@ -1,6 +1,6 @@
 {
-  "name": "library",
-  "version": "0.0.1",
+  "name": "ag-virtual-scroll",
+  "version": "1.7.0",
   "peerDependencies": {
     "@angular/common": "^16.2.0",
     "@angular/core": "^16.2.0"
