@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "deploy-git-pages": "ng build demo -c=production --aot --base-href=/ag-virtual-scroll/ && node node_modules/gh-pages/bin/gh-pages -d dist",
+    "deploy-git-pages": "ng build demo -c=production --aot --base-href=/ag-virtual-scroll/ && node node_modules/gh-pages/bin/gh-pages -d dist/demo",
     "build-and-publish": "npm run build-lib && npm run publish-pkg",
     "build-lib": "ng build library && node copy && cd dist/library && npm pack",
     "publish-pkg": "pushd dist/library && npm publish"
