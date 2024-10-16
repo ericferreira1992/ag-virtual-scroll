@@ -20,7 +20,7 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     @ViewChild('temp', {static: false}) public temp: TemplateRef<any>;
 
-    @Input('sticky') public sticky: boolean = false;
+    @Input('sticky') public sticky: boolean;
 
     public get el() { return this.elRef && this.elRef.nativeElement; }
 

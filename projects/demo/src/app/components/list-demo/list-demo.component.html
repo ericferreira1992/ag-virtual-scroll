@@ -13,7 +13,7 @@
             </button>
         </div>
 
-        <ag-virtual-scroll #vs [items]="items" height="350px" class="box-border">
+        <ag-virtual-scroll #vs [items]="items" height="350px" class="box-border" [min-row-height]="68">
             <div class="demo-item" *ngFor="let item of vs.items">
                 <div class="demo-item-left">
                     <img [src]="item.avatar" [style.borderColor]="item.color" [style.backgroundColor]="item.color" />
