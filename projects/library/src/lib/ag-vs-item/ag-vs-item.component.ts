@@ -3,8 +3,8 @@ import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, 
 @Component({
 	selector: 'ag-vs-item',
 	templateUrl: './ag-vs-item.component.html',
-    styles: [
-        `:host {
+	styles: [
+		`:host {
             display: block;
         }
         
@@ -13,47 +13,47 @@ import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, 
             width: inherit;
             height: inherit;
         }`
-    ]
+	]
 })
 export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
-    @HostBinding('class.ag-vs-item') public class: boolean = true;
+	@HostBinding('class.ag-vs-item') public class: boolean = true;
 
-    @ViewChild('temp', {static: false}) public temp: TemplateRef<any>;
+	@ViewChild('temp', { static: false }) public temp: TemplateRef<any>;
 
-    @Input('sticky') public sticky: boolean;
+	@Input('sticky') public sticky: boolean;
 
-    public get el() { return this.elRef && this.elRef.nativeElement; }
+	public get el() { return this.elRef && this.elRef.nativeElement; }
 
-    public viewOk: boolean = false;
+	public viewOk: boolean = false;
 
-    public onStickyChange = new EventEmitter<boolean>(false);
+	public onStickyChange = new EventEmitter<boolean>(false);
 
-    public isSticked: boolean = false;
+	public isSticked: boolean = false;
 
-    constructor(
-        public elRef: ElementRef<HTMLElement>,
-        public appRef: ApplicationRef
+	constructor(
+		public elRef: ElementRef<HTMLElement>,
+		public appRef: ApplicationRef
 	) {
-    }
-    
-    ngOnInit() {
-    }
+	}
 
-    ngAfterViewInit() {
-    }
-	
+	ngOnInit() {
+	}
+
+	ngAfterViewInit() {
+	}
+
 	ngOnChanges(changes: SimpleChanges) {
-        if ('sticky' in changes)
-            this.onStickyChange.next(this.sticky);
-    }
+		if ('sticky' in changes)
+			this.onStickyChange.next(this.sticky);
+	}
 
-    public forceUpdateInputs() {
-        this.viewOk = false;
-        this.appRef.tick();
-        this.viewOk = true;
-    }
+	public forceUpdateInputs() {
+		this.viewOk = false;
+		this.appRef.tick();
+		this.viewOk = true;
+	}
 
-    public getHtml() {
-       return this.el.outerHTML;
-    }
+	public getHtml() {
+		return this.el.outerHTML;
+	}
 }

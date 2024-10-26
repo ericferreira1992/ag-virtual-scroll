@@ -6,7 +6,7 @@ He also work with differents items height.
 ## Use example ([more examples](https://ericferreira1992.github.io/ag-virtual-scroll)).
 
 ```html
-<ag-virtual-scroll #vs [items]="items" height="350px" min-row-height="50" class="box-border">
+<ag-virtual-scroll #vs [items]="items" height="350px" [min-row-height]="50" class="box-border">
     <div class="demo-item" *ngFor="let item of vs.items">
         <div>
             <span>{{item.id}}</span>

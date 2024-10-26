@@ -48,6 +48,7 @@ export class ListDemoComponent implements OnInit {
 
     refresh() {
         this.items = new Array(this.numberItems).fill(null).map(this.parent.getMock);
+        console.log(this.items);
     }
 
     ngOnInit() {

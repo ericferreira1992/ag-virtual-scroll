@@ -26,6 +26,11 @@ import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rx
 				width: 100%;
 		}
 
+		:host::ng-deep thead {
+			position: relative;
+			z-index: 9;
+		}
+
 		:host::ng-deep .items-container.sticked-outside > .ag-vs-item:last-child {
 				position: absolute;
 				top: 0;
@@ -109,21 +114,19 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 	public containerWidth: number = 0;
 	private get itemsNoSticky() { return this.currentStickyItem ? this.items.filter((item) => this.originalItems[this.currentStickyItem.index] !== item) : this.items; }
 	public get vsItems() { return (this.queryVsItems && this.queryVsItems.toArray()) || []; }
-	public get numberItemsRendred(): number { return this.endIndex - this.startIndex; }
+	public get numberItemsRendered(): number { return this.endIndex - this.startIndex; }
 	public get el() { return this.elRef && this.elRef.nativeElement; }
 	public get itemsContainerEl() { return this.itemsContainerElRef && this.itemsContainerElRef.nativeElement; }
-	private get heightIsPercentageOrView() { return this.height?.includes('%'); }
+	private get heightIsInPixels() { return this.height?.endsWith('px') || /^([\s\d]+)$/g.test(this.height); }
 	private get heightValue() {
-		if (this.heightIsPercentageOrView) {
-			return this.el?.clientHeight ?? 0;
-		}
-		else {
+		if (this.heightIsInPixels) {
 			const onlyNumber = (() => {
 				const matched = this.height?.match(/[-]{0,1}[\d]*[,]?[\d]*[.]{0,1}[\d]+/g);
 				return matched?.length > 0 ? matched[0] : '0';
 			})();
 			return parseFloat(onlyNumber);
 		}
+		return this.el?.clientHeight ?? 0;
 	}
 
 	private destroy$ = new Subject<void>();
@@ -148,9 +151,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 	ngOnInit() {
 		fromEvent(this.el, 'scroll').pipe(
 			takeUntil(this.destroy$),
-			tap(() => {
-				this.onScroll();
-			})
+			tap(() => this.onScroll()),
 		).subscribe();
 		this.isInitialized = true;
 		this.refreshData();
@@ -255,6 +256,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 	private setHeight() {
 		this.height = this.height ?? '0';
 		this.height = this.height + (/^([\s\d]+)$/g.test(this.height) ? 'px' : '');
+		this.el.style.height = this.heightIsInPixels ? null : this.height;
 		this.el.style.maxHeight = this.height;
 	}
 
@@ -315,21 +317,22 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 			return;
 		}
 		let dimensions = this.getDimensions();
-
+		
+		const qnttyCanRender = this.numberItemsCanRender();
 		this.contentHeight = dimensions.contentHeight;
 		this.paddingTop = dimensions.paddingTop;
 		this.startIndex = dimensions.itemsThatAreGone;
-		this.endIndex = Math.min((this.startIndex + this.numberItemsCanRender()), (this.originalItems.length - 1));
+		this.endIndex = Math.min((this.startIndex + qnttyCanRender), (this.originalItems.length - 1));
 
 		if (this.indexCurrentSticky >= 0 && (this.startIndex > this.indexCurrentSticky || this.endIndex < this.indexCurrentSticky)) {
 			if (this.currentStickyItem)
 				this.currentStickyItem.outside = true;
-			this.items = [...this.originalItems.slice(this.startIndex, Math.min(this.endIndex + 1, this.originalItems.length)), this.originalItems[this.indexCurrentSticky]];
+			this.items = [...this.originalItems.slice(this.startIndex, Math.min(this.endIndex, this.originalItems.length)), this.originalItems[this.indexCurrentSticky]];
 		}
 		else {
 			if (this.currentStickyItem)
 				this.currentStickyItem.outside = false;
-			this.items = this.originalItems.slice(this.startIndex, Math.min(this.endIndex + 1, this.originalItems.length));
+			this.items = this.originalItems.slice(this.startIndex, Math.min(this.endIndex, this.originalItems.length));
 		}
 
 		this.onItemsRender.emit(new AgVsRenderEvent<any>({
