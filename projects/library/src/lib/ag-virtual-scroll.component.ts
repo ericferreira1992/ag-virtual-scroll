@@ -46,7 +46,7 @@ import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rx
 		}`
 	]
 })
-export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy, AfterContentChecked {
+export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 	@ViewChild('itemsContainer', { static: true }) private itemsContainerElRef: ElementRef<HTMLElement>;
 
 	@ContentChildren(AgVsItemComponent) private queryVsItems: QueryList<AgVsItemComponent>;
@@ -109,9 +109,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 	public endIndex: number = 0;
 	private isTable: boolean = false;
 	private scrollIsUp: boolean = false;
-	private lastScrollIsUp: boolean = false;
 	private previousItemsHeight: number[] = [];
-	public containerWidth: number = 0;
 	private get itemsNoSticky() { return this.currentStickyItem ? this.items.filter((item) => this.originalItems[this.currentStickyItem.index] !== item) : this.items; }
 	public get vsItems() { return (this.queryVsItems && this.queryVsItems.toArray()) || []; }
 	public get numberItemsRendered(): number { return this.endIndex - this.startIndex; }
@@ -141,6 +139,9 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 		this.queryVsItems.changes.pipe(
 			takeUntil(this.destroy$),
 		).subscribe(() => {
+			for(const item of this.vsItems) {
+				item.updateIndex();
+			}
 			if (this.vsItems.some((item) => item.sticky != null)) {
 				this.checkStickItem(this.scrollIsUp);
 			}
@@ -211,14 +212,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 		}
 	}
 
-	ngAfterContentChecked() {
-		let currentContainerWidth = this.itemsContainerEl && this.itemsContainerEl.clientWidth;
-		if (currentContainerWidth !== this.containerWidth)
-			this.containerWidth = currentContainerWidth;
-
-		this.manipuleRenderedItems();
-	}
-
 	private currentAndPrevItemsAreDiff() {
 		if (this.originalItems.length >= this.prevOriginalItems.length) {
 			let begin = 0;
@@ -244,7 +237,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
 		this.prepareDataItems();
 		this.isTable = this.checkIsTable();
-		this.lastScrollIsUp = this.scrollIsUp;
 		this.scrollIsUp = up;
 	}
 
@@ -341,31 +333,12 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 			endIndex: this.endIndex,
 			length: this.itemsNoSticky.length
 		}));
-
-		this.manipuleRenderedItems();
 	}
 
 	private numberItemsCanRender() {
 		const division = this.heightValue / this.minRowHeight;
 		const remaining = division - Math.floor(division);
 		return Math.floor(division) + (remaining > 0 ? 1 : 0) + 1;
-	}
-
-	private manipuleRenderedItems() {
-		let children = this.getInsideChildrens();
-		for (let i = 0; i < children.length; i++) {
-			let child = children[i] as HTMLElement;
-			if (child.style.display !== 'none') {
-				let realIndex = this.startIndex + i;
-				child.style.minHeight = `${this.minRowHeight}px`;
-
-				let className = (realIndex + 1) % 2 === 0 ? 'even' : 'odd';
-				let unclassName = className == 'even' ? 'odd' : 'even';
-
-				child.classList.add(`ag-virtual-scroll-${className}`);
-				child.classList.remove(`ag-virtual-scroll-${unclassName}`);
-			}
-		}
 	}
 
 	private getInsideChildrens(): HTMLCollection {
@@ -619,7 +592,6 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 
 				if (ok) {
 					clearInterval(interval);
-					this.manipuleRenderedItems();
 					subscriber.next();
 				}
 			});

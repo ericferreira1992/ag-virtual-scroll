@@ -1,4 +1,5 @@
-import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, OnInit, HostBinding, ApplicationRef, ViewChild, TemplateRef, EventEmitter } from '@angular/core';
+import { Component, Input, ElementRef, OnChanges, SimpleChanges, OnInit, ApplicationRef, ViewChild, TemplateRef, EventEmitter, AfterContentInit, forwardRef, Inject } from '@angular/core';
+import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
 
 @Component({
 	selector: 'ag-vs-item',
@@ -13,10 +14,12 @@ import { Component, Input, ElementRef, AfterViewInit, OnChanges, SimpleChanges, 
             width: inherit;
             height: inherit;
         }`
-	]
+	],
+	host: {
+		'[class.ag-vs-item]': 'true',
+	}
 })
-export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
-	@HostBinding('class.ag-vs-item') public class: boolean = true;
+export class AgVsItemComponent implements OnInit, AfterContentInit, OnChanges {
 
 	@ViewChild('temp', { static: false }) public temp: TemplateRef<any>;
 
@@ -30,21 +33,32 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
 
 	public isSticked: boolean = false;
 
+	public virtualIndex: number;
+	public get index() { return this.parent.startIndex + (this.virtualIndex ?? 0); }
+
 	constructor(
+		@Inject(forwardRef(() => AgVirtualSrollComponent))
+		public parent: AgVirtualSrollComponent,
 		public elRef: ElementRef<HTMLElement>,
-		public appRef: ApplicationRef
+		public appRef: ApplicationRef,
 	) {
 	}
 
 	ngOnInit() {
 	}
 
-	ngAfterViewInit() {
+	public ngAfterContentInit() {
+		this.updateIndex();
 	}
 
-	ngOnChanges(changes: SimpleChanges) {
+	public ngOnChanges(changes: SimpleChanges) {
 		if ('sticky' in changes)
 			this.onStickyChange.next(this.sticky);
+	}
+	
+	public updateIndex() {
+		this.virtualIndex = Array.from(this.parent.itemsContainerEl?.children).indexOf(this.el);
+		this.manipuleRenderedItems();
 	}
 
 	public forceUpdateInputs() {
@@ -55,5 +69,18 @@ export class AgVsItemComponent implements OnInit, AfterViewInit, OnChanges {
 
 	public getHtml() {
 		return this.el.outerHTML;
+	}
+
+	private manipuleRenderedItems() {
+		if (this.el?.style.display !== 'none') {
+			const realIndex = this.index;
+			
+			const className = (realIndex + 1) % 2 === 0 ? 'even' : 'odd';
+			const unclassName = className == 'even' ? 'odd' : 'even';
+			const getClassName = (classname: string) => `ag-virtual-scroll-${classname}`;			
+			this.el.style.minHeight = `${this.parent.minRowHeight}px`;
+			if (!this.el.classList.contains(getClassName(className))) this.el.classList.add(getClassName(className));
+			if (this.el.classList.contains(getClassName(unclassName))) this.el.classList.remove(getClassName(unclassName));
+		}
 	}
 }

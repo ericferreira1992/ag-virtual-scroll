@@ -1,7 +1,8 @@
 @import '~highlight.js/styles/github.css';
 @import 'assets/scss/variables';
 
-html, body {
+html,
+body {
     font-size: 13px;
     color: #666;
     font-family: Arial;
@@ -29,4 +30,27 @@ p {
     font-size: 14px;
     margin: 0;
     font-size: 12px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar:hover {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 20px;
+    box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.24);
+}
+
+::-webkit-scrollbar-thumb:active {
+    border-radius: 20px;
+    box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.37);
 }
