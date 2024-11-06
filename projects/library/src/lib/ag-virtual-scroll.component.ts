@@ -314,17 +314,17 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 		this.contentHeight = dimensions.contentHeight;
 		this.paddingTop = dimensions.paddingTop;
 		this.startIndex = dimensions.itemsThatAreGone;
-		this.endIndex = Math.min((this.startIndex + qnttyCanRender), (this.originalItems.length - 1));
+		this.endIndex = Math.min((this.startIndex + qnttyCanRender), this.originalItems.length) - 1;
 
 		if (this.indexCurrentSticky >= 0 && (this.startIndex > this.indexCurrentSticky || this.endIndex < this.indexCurrentSticky)) {
 			if (this.currentStickyItem)
 				this.currentStickyItem.outside = true;
-			this.items = [...this.originalItems.slice(this.startIndex, Math.min(this.endIndex, this.originalItems.length)), this.originalItems[this.indexCurrentSticky]];
+			this.items = [...this.originalItems.slice(this.startIndex, this.endIndex + 1), this.originalItems[this.indexCurrentSticky]];
 		}
 		else {
 			if (this.currentStickyItem)
 				this.currentStickyItem.outside = false;
-			this.items = this.originalItems.slice(this.startIndex, Math.min(this.endIndex, this.originalItems.length));
+			this.items = this.originalItems.slice(this.startIndex, this.endIndex + 1);
 		}
 
 		this.onItemsRender.emit(new AgVsRenderEvent<any>({
