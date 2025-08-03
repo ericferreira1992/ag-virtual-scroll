@@ -1,4 +1,4 @@
-# ag-virtual-scroll (Angular 18+)
+# ag-virtual-scroll (from Angular v13 to v20+)
 
 Angular Component of virtual-scroll. It easy to use and works light and clean.
 He also work with differents items height.
@@ -61,5 +61,15 @@ Name		        		| Type      	                        | Default		            | De
 `min-row-height`   			| `number`  	                        | `40`		                | This determine how minimm height each item will have.
 `height`     				| `string`		                        | `'auto'`  	            | Define a fixed height for container to make a virtual-scroll of items.
 `onItemsRender`  			| `EventEmitter<AgVsRenderEvent<T>>`	| none		                | Define a max width to container.
+
+## Angular version compatibility
+**Angular** version		        | **AgVirtualScroll** version      	                        
+----------------------------- | ----------------------------
+v20   			                  | v1.20.x
+v18   			                  | v1.9.x
+v17   			                  | v1.8.x
+v15   			                  | v1.6.x
+v14   			                  | v1.5.x
+v13   			                  | v1.4.x
 
 
