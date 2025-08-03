@@ -3,9 +3,10 @@ import { AgVsRenderEvent } from 'projects/library/src/public-api';
 import { AppComponent } from 'projects/demo/src/app/app.component';
 
 @Component({
-  selector: 'app-list-demo',
-  templateUrl: './list-demo.component.html',
-  styleUrls: ['./list-demo.component.scss']
+    selector: 'app-list-demo',
+    templateUrl: './list-demo.component.html',
+    styleUrls: ['./list-demo.component.scss'],
+    standalone: false
 })
 export class ListDemoComponent implements OnInit {
     public items: any[] = [];

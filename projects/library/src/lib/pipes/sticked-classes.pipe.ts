@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
-   name: 'stickedClasses'
+    name: 'stickedClasses',
+    standalone: false
 })
 export class StickedClassesPipe implements PipeTransform {
 

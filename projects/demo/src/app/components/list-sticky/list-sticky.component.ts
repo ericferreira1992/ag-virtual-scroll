@@ -2,9 +2,10 @@ import { Component, OnInit, forwardRef, Inject } from '@angular/core';
 import { AppComponent } from 'projects/demo/src/app/app.component';
 
 @Component({
-  selector: 'app-list-sticky',
-  templateUrl: './list-sticky.component.html',
-  styleUrls: ['./list-sticky.component.scss']
+    selector: 'app-list-sticky',
+    templateUrl: './list-sticky.component.html',
+    styleUrls: ['./list-sticky.component.scss'],
+    standalone: false
 })
 export class ListStickyComponent implements OnInit {
     public items: any[] = [];

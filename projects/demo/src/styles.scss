@@ -1,5 +1,4 @@
-@import '~highlight.js/styles/github.css';
-@import 'assets/scss/variables';
+@use 'variables' as *;
 
 html,
 body {

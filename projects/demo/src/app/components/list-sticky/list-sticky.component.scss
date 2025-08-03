@@ -1,4 +1,4 @@
-@import '../../../assets/scss/variables.scss';
+@use 'variables' as *;
 
 :host::ng-deep {
     .btn-check {

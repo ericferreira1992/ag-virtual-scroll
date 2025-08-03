@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-table-demo',
-  templateUrl: './table-demo.component.html',
-  styleUrls: ['./table-demo.component.scss']
+    selector: 'app-table-demo',
+    templateUrl: './table-demo.component.html',
+    styleUrls: ['./table-demo.component.scss'],
+    standalone: false
 })
 export class TableDemoComponent implements OnInit {
     public items: any[] = [];

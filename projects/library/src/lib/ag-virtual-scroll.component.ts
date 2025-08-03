@@ -4,9 +4,9 @@ import { AgVsItemComponent } from './ag-vs-item/ag-vs-item.component';
 import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rxjs';
 
 @Component({
-	selector: 'ag-virtual-scroll',
-	templateUrl: './ag-virtual-scroll.component.html',
-	styles: [`
+    selector: 'ag-virtual-scroll',
+    templateUrl: './ag-virtual-scroll.component.html',
+    styles: [`
 		:host {
 				display: block;
 				position: relative;
@@ -44,7 +44,8 @@ import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rx
 				box-shadow: 0 5px 5px rgba(0, 0, 0, .1);
 				background: #FFF;
 		}`
-	]
+    ],
+    standalone: false
 })
 export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 	@ViewChild('itemsContainer', { static: true }) private itemsContainerElRef: ElementRef<HTMLElement>;

@@ -2,10 +2,10 @@ import { Component, Input, ElementRef, OnChanges, SimpleChanges, OnInit, Applica
 import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
 
 @Component({
-	selector: 'ag-vs-item',
-	templateUrl: './ag-vs-item.component.html',
-	styles: [
-		`:host {
+    selector: 'ag-vs-item',
+    templateUrl: './ag-vs-item.component.html',
+    styles: [
+        `:host {
             display: block;
         }
         
@@ -14,10 +14,11 @@ import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
             width: inherit;
             height: inherit;
         }`
-	],
-	host: {
-		'[class.ag-vs-item]': 'true',
-	}
+    ],
+    host: {
+        '[class.ag-vs-item]': 'true',
+    },
+    standalone: false
 })
 export class AgVsItemComponent implements OnInit, AfterContentInit, OnChanges {
 
