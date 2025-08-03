@@ -7,25 +7,28 @@ He also work with differents items height.
 
 ```html
 <ag-virtual-scroll #vs [items]="items" height="350px" [min-row-height]="50" class="box-border">
+  @for (item of vs.items; track item) {
     <div class="demo-item" *ngFor="let item of vs.items">
-        <div>
-            <span>{{item.id}}</span>
-        </div>
-        <div>
-            <strong>{{item.name}}</strong><br/>
-            {{item.price | currency}}
-        </div>
+      <div>
+        <span>{{item.id}}</span>
+      </div>
+      <div>
+        <strong>{{item.name}}</strong><br/>
+        {{item.price | currency}}
+      </div>
     </div>
+  }
 </ag-virtual-scroll>
 ```
 ![](demo.gif)
 
-## ⚠️Important⚠️
-- Always wrap the repeat element with a _div_ or _ag-vs-item_, per example: ``<div *ngFor="let item of vs.items">...you structure of content...</div>``.
+## ⚠️ Important ⚠️
+- The version 1.20.x of this lib is using standalone components, so ~~`AgVirtualScrollModule`~~ no longer exists.
+- Always wrap the repeat element with some tag (ie.: `div`) or `ag-vs-item`, per example: ``@for (item of vs.items; track item) { <div>...you structure of content...</div> }``.
 - Define a ``min-row-height`` to increase virtualization performance.
 - Always define a ``height`` because it will be the one that will do the virtualization of the items.
 - Inform your all data list in ``[items]``.
-- Add ``#vs`` to use in iteration ``*ngFor``.
+- Add ``#vs`` to use in iteration ``@for``.
 
 # Usage
 
@@ -34,7 +37,7 @@ He also work with differents items height.
 
 ## Import into Module
 ```typescript
-import { AgVirtualScrollModule } from 'ag-virtual-scroll';
+import { AgVirtualScrollComponent, AgVsItemComponent } from 'ag-virtual-scroll';
 
 @NgModule({
   imports: [
