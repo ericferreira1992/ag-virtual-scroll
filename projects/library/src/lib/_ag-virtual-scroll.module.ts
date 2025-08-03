@@ -1,8 +1,6 @@
 import { NgModule, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AgVirtualSrollComponent } from './ag-virtual-scroll.component';
-import { AgVsItemComponent } from './ag-vs-item/ag-vs-item.component';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { StickedClassesPipe } from './pipes/sticked-classes.pipe';
 
@@ -11,16 +9,17 @@ import { StickedClassesPipe } from './pipes/sticked-classes.pipe';
         CommonModule
     ],
     declarations: [
-        AgVirtualSrollComponent,
-        AgVsItemComponent,
+        // AgVirtualSrollComponent,
 
         // Pipes
         MathAbsPipe,
         StickedClassesPipe
     ],
     exports: [
-        AgVirtualSrollComponent,
-        AgVsItemComponent
+        MathAbsPipe,
+        StickedClassesPipe
+        // AgVirtualSrollComponent,
+        // AgVsItemComponent
     ],
 })
 export class AgVirtualScrollModule { }

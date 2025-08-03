@@ -1,7 +1,9 @@
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer2, OnInit, Output, EventEmitter, QueryList, ContentChildren, AfterContentChecked, OnDestroy } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, Renderer2, OnInit, Output, EventEmitter, QueryList, ContentChildren, OnDestroy } from '@angular/core';
+import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rxjs';
 import { AgVsRenderEvent } from './classes/ag-vs-render-event.class';
 import { AgVsItemComponent } from './ag-vs-item/ag-vs-item.component';
-import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rxjs';
+import { AgVirtualScrollModule } from './_ag-virtual-scroll.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'ag-virtual-scroll',
@@ -45,9 +47,13 @@ import { fromEvent, Observable, Subject, Subscription, takeUntil, tap } from 'rx
 				background: #FFF;
 		}`
     ],
-    standalone: false
+    imports: [
+      CommonModule,
+      AgVirtualScrollModule,
+      AgVsItemComponent,
+    ],
 })
-export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class AgVirtualScrollComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 	@ViewChild('itemsContainer', { static: true }) private itemsContainerElRef: ElementRef<HTMLElement>;
 
 	@ContentChildren(AgVsItemComponent) private queryVsItems: QueryList<AgVsItemComponent>;
@@ -310,7 +316,7 @@ export class AgVirtualSrollComponent implements OnInit, AfterViewInit, OnChanges
 			return;
 		}
 		let dimensions = this.getDimensions();
-		
+
 		const qnttyCanRender = this.numberItemsCanRender();
 		this.contentHeight = dimensions.contentHeight;
 		this.paddingTop = dimensions.paddingTop;

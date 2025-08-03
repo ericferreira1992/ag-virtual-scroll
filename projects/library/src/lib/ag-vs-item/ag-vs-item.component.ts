@@ -1,5 +1,7 @@
 import { Component, Input, ElementRef, OnChanges, SimpleChanges, OnInit, ApplicationRef, ViewChild, TemplateRef, EventEmitter, AfterContentInit, forwardRef, Inject } from '@angular/core';
-import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
+import { AgVirtualScrollComponent } from '../ag-virtual-scroll.component';
+import { CommonModule } from '@angular/common';
+import { AgVirtualScrollModule } from '../_ag-virtual-scroll.module';
 
 @Component({
     selector: 'ag-vs-item',
@@ -8,7 +10,7 @@ import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
         `:host {
             display: block;
         }
-        
+
         :host > ng-template {
             display: inherit;
             width: inherit;
@@ -18,7 +20,10 @@ import { AgVirtualSrollComponent } from '../ag-virtual-scroll.component';
     host: {
         '[class.ag-vs-item]': 'true',
     },
-    standalone: false
+    imports: [
+      CommonModule,
+      AgVirtualScrollModule,
+    ],
 })
 export class AgVsItemComponent implements OnInit, AfterContentInit, OnChanges {
 
@@ -38,8 +43,8 @@ export class AgVsItemComponent implements OnInit, AfterContentInit, OnChanges {
 	public get index() { return this.parent.startIndex + (this.virtualIndex ?? 0); }
 
 	constructor(
-		@Inject(forwardRef(() => AgVirtualSrollComponent))
-		public parent: AgVirtualSrollComponent,
+		@Inject(forwardRef(() => AgVirtualScrollComponent))
+		public parent: AgVirtualScrollComponent,
 		public elRef: ElementRef<HTMLElement>,
 		public appRef: ApplicationRef,
 	) {
@@ -56,7 +61,7 @@ export class AgVsItemComponent implements OnInit, AfterContentInit, OnChanges {
 		if ('sticky' in changes)
 			this.onStickyChange.next(this.sticky);
 	}
-	
+
 	public updateIndex() {
 		this.virtualIndex = Array.from(this.parent.itemsContainerEl?.children).indexOf(this.el);
 		this.manipuleRenderedItems();
@@ -75,10 +80,10 @@ export class AgVsItemComponent implements OnInit, AfterContentInit, OnChanges {
 	private manipuleRenderedItems() {
 		if (this.el?.style.display !== 'none') {
 			const realIndex = this.index;
-			
+
 			const className = (realIndex + 1) % 2 === 0 ? 'even' : 'odd';
 			const unclassName = className == 'even' ? 'odd' : 'even';
-			const getClassName = (classname: string) => `ag-virtual-scroll-${classname}`;			
+			const getClassName = (classname: string) => `ag-virtual-scroll-${classname}`;
 			this.el.style.minHeight = `${this.parent.minRowHeight}px`;
 			if (!this.el.classList.contains(getClassName(className))) this.el.classList.add(getClassName(className));
 			if (this.el.classList.contains(getClassName(unclassName))) this.el.classList.remove(getClassName(unclassName));

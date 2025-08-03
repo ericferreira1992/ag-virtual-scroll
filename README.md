@@ -39,7 +39,8 @@ import { AgVirtualScrollModule } from 'ag-virtual-scroll';
 @NgModule({
   imports: [
     ...,
-    AgVirtualScrollModule
+    AgVirtualScrollComponent,
+    AgVsItemComponent, // Optional
   ],
   declarations: [...],
   providers: [],
