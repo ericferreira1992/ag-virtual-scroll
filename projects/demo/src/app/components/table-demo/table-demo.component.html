@@ -1,42 +1,44 @@
 <div class="demo-container">
-    <div class="demo-viewer">
-        <h4>
-            Example 04
-        </h4>
-        <span>Using in table</span>
+  <div class="demo-viewer">
+    <h4>
+      Example 04
+    </h4>
+    <span>Using in table</span>
 
-        <div class="buttons">
-            <button (click)="remove()">ADD <strong>-1000</strong></button>
-            <button (click)="add()">ADD <strong>+1000</strong></button>
-        </div>
+    <div class="buttons">
+      <button (click)="remove()">ADD <strong>-1000</strong></button>
+      <button (click)="add()">ADD <strong>+1000</strong></button>
+    </div>
 
-        <ag-virtual-scroll #vs [items]="items" height="350px" class="box-border">
-            <table>
-                <thead>
-                    <th width="25%">ID</th>
-                    <th width="50%">NAME</th>
-                    <th width="25%">PRICE</th>
-                </thead>
-                <tbody>
-                    <tr class="demo-item" *ngFor="let item of vs.items">
-                        <td width="25%"><strong>{{item.id}}</strong></td>
-                        <td width="50%">{{item.name}}</td>
-                        <td width="25%">{{item.price | currency}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </ag-virtual-scroll>
-        <div class="demo-info">
-            <div>
-                Rendered: <strong>{{vs.numberItemsRendered}}</strong> items (from <strong>{{vs.startIndex + 1}}</strong> to <strong>{{vs.endIndex + 1}}</strong>).
-            </div>
-            <div>
-                Total: <strong>{{items.length}}</strong> items.
-            </div>
-        </div>
+    <ag-virtual-scroll #vs [items]="items" height="350px" class="box-border">
+      <table>
+        <thead>
+          <th width="25%">ID</th>
+          <th width="50%">NAME</th>
+          <th width="25%">PRICE</th>
+        </thead>
+        <tbody>
+          @for (item of vs.items; track item) {
+            <tr class="demo-item">
+              <td width="25%"><strong>{{item.id}}</strong></td>
+              <td width="50%">{{item.name}}</td>
+              <td width="25%">{{item.price | currency}}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </ag-virtual-scroll>
+    <div class="demo-info">
+      <div>
+        Rendered: <strong>{{vs.numberItemsRendered}}</strong> items (from <strong>{{vs.startIndex + 1}}</strong> to <strong>{{vs.endIndex + 1}}</strong>).
+      </div>
+      <div>
+        Total: <strong>{{items.length}}</strong> items.
+      </div>
     </div>
-    <div class="demo-code">
-        <h3>Code</h3>
-        <pre><code [highlight]="strCode" [lineNumbers]="true"></code></pre>
-    </div>
+  </div>
+  <div class="demo-code">
+    <h3>Code</h3>
+    <pre><code [highlight]="strCode" [lineNumbers]="true"></code></pre>
+  </div>
 </div>

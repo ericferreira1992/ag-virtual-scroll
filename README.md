@@ -1,4 +1,4 @@
-# ag-virtual-scroll (from Angular v13 to v20+)
+# ag-virtual-scroll (from Angular v13 to v21+)
 
 Angular Component of virtual-scroll. It easy to use and works light and clean.
 He also work with differents items height.
