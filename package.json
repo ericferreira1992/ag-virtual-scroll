@@ -1,6 +1,14 @@
 {
   "name": "ag-virtual-scroll",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-user/ag-virtual-scroll.git"
+  },
+  "homepage": "https://ericferreira1992.github.io/ag-virtual-scroll",
+  "bugs": {
+    "url": "https://github.com/your-user/ag-virtual-scroll/issues"
+  },
   "scripts": {
     "ng": "ng",
     "deploy-git-pages": "ng build demo -c=production --base-href=/ag-virtual-scroll/ && node node_modules/gh-pages/bin/gh-pages -d ./dist/demo",

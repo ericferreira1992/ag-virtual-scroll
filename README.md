@@ -20,7 +20,7 @@ He also work with differents items height.
   }
 </ag-virtual-scroll>
 ```
-![](demo.gif)
+![](https://raw.githubusercontent.com/ericferreira1992/ag-virtual-scroll/refs/heads/master/demo.gif)
 
 ## ⚠️ Important ⚠️
 - The version 1.20.x of this lib is using standalone components, so ~~`AgVirtualScrollModule`~~ no longer exists.
