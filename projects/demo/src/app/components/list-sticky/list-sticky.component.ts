@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, Inject } from '@angular/core';
-import { AppComponent } from 'projects/demo/src/app/app.component';
+import { AppComponent } from '../../app.component';
 
 @Component({
     selector: 'app-list-sticky',

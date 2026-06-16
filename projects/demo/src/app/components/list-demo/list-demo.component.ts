@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef, Inject } from '@angular/core';
-import { AgVsRenderEvent } from 'projects/library/src/public-api';
-import { AppComponent } from 'projects/demo/src/app/app.component';
+import { AgVsRenderEvent } from '../../../../../library/src/public-api';
+import { AppComponent } from '../../app.component';
 
 @Component({
     selector: 'app-list-demo',

@@ -2,7 +2,7 @@
 <div
   #itemsContainer
   class="items-container"
-  [style.transform]="'translateY(' + paddingTop + 'px)'"
+  [style.transform]="!isTable && 'translateY(' + paddingTop + 'px)'"
   [ngClass]="{ 'sticked-outside': currentStickyItem?.outside }"
   >
   <ng-content></ng-content>

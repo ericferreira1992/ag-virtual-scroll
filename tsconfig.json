@@ -2,8 +2,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "ignoreDeprecations": "6.0",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,
@@ -15,9 +13,12 @@
     "exactOptionalPropertyTypes": false,
     "noImplicitReturns": true,
     "paths": {
-      "library": [
+      "built-library": [
         "./dist/library"
-      ]
+      ],
+      "library": [
+        "./projects/library/src/public-api"
+      ],
     },
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
