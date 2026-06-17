@@ -69,6 +69,8 @@ Name		        		| Type      	                        | Default		            | De
 ## Angular version compatibility
 **Angular** version		        | **AgVirtualScroll** version      	                        
 ----------------------------- | ----------------------------
+v22   			                  | v1.22.x
+v21   			                  | v1.21.x
 v20   			                  | v1.20.x
 v18   			                  | v1.9.x
 v17   			                  | v1.8.x
