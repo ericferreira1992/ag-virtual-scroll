@@ -1,6 +1,14 @@
 {
   "name": "ag-virtual-scroll",
   "version": "1.22.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-user/ag-virtual-scroll.git"
+  },
+  "homepage": "https://ericferreira1992.github.io/ag-virtual-scroll",
+  "bugs": {
+    "url": "https://github.com/your-user/ag-virtual-scroll/issues"
+  },
   "peerDependencies": {
     "@angular/common": ">=22.0.1",
     "@angular/core": ">=22.0.1"
