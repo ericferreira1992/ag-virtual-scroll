@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { HighlightModule, provideHighlightOptions } from 'ngx-highlightjs';
-import { AgVirtualScrollComponent, AgVsItemComponent } from '../../../library/src/public-api';
+import { AgVirtualScrollComponent, AgVsItemComponent } from 'projects/library/src/public-api';
 import { AppComponent } from './app.component';
 import { TableDemoComponent } from './components/table-demo/table-demo.component';
 import { ListDemoComponent } from './components/list-demo/list-demo.component';
