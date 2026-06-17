@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Inject } from '@angular/core';
+import { Component, OnInit, forwardRef, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { AgVsRenderEvent } from '../../../../../library/src/public-api';
 import { AppComponent } from '../../app.component';
 
@@ -6,6 +6,7 @@ import { AppComponent } from '../../app.component';
     selector: 'app-list-demo',
     templateUrl: './list-demo.component.html',
     styleUrls: ['./list-demo.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ListDemoComponent implements OnInit {

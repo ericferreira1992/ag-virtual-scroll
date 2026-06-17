@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnChanges, SimpleChanges, OnInit, ApplicationRef, ViewChild, TemplateRef, EventEmitter, AfterContentInit, forwardRef, Inject } from '@angular/core';
+import { Component, Input, ElementRef, OnChanges, SimpleChanges, OnInit, ApplicationRef, ViewChild, TemplateRef, EventEmitter, AfterContentInit, forwardRef, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { AgVirtualScrollComponent } from '../ag-virtual-scroll.component';
 import { CommonModule } from '@angular/common';
 import { AgVirtualScrollModule } from '../_ag-virtual-scroll.module';
@@ -20,6 +20,7 @@ import { AgVirtualScrollModule } from '../_ag-virtual-scroll.module';
     host: {
         '[class.ag-vs-item]': 'true',
     },
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
       CommonModule,
       AgVirtualScrollModule,

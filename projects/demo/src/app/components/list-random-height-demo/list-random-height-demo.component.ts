@@ -1,10 +1,11 @@
-import { Component, OnInit, forwardRef, Inject } from '@angular/core';
+import { Component, OnInit, forwardRef, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { AppComponent } from '../../app.component';
 
 @Component({
     selector: 'app-list-random-height-demo',
     templateUrl: './list-random-height-demo.component.html',
     styleUrls: ['./list-random-height-demo.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ListRandomHeightDemoComponent implements OnInit {

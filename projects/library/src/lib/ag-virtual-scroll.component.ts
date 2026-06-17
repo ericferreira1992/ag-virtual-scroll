@@ -15,6 +15,7 @@ import {
   OnDestroy,
   AfterContentInit,
   inject,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   fromEvent,
@@ -78,6 +79,7 @@ import { CommonModule } from '@angular/common';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, AgVirtualScrollModule, AgVsItemComponent],
 })
 export class AgVirtualScrollComponent

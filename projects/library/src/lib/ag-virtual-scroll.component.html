@@ -3,8 +3,8 @@
   #itemsContainer
   class="items-container"
   [style.transform]="!isTable && 'translateY(' + paddingTop + 'px)'"
-  [ngClass]="{ 'sticked-outside': currentStickyItem?.outside }"
-  >
+  [class]="{ 'sticked-outside': $safeNavigationMigration(currentStickyItem?.outside) }"
+>
   <ng-content></ng-content>
 </div>
 @if (currentStickyItem?.comp && currentStickyItem.comp.isSticked) {
